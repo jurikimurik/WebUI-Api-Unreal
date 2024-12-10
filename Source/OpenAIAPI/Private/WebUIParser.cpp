@@ -1,33 +1,36 @@
-// Copyright Kellan Mythen 2023. All rights Reserved.
-
-#include "OpenAIParser.h"
+﻿#include "WebUIParser.h"
 #include "OpenAIUtils.h"
 #include "Dom/JsonObject.h"
 
 
 // Constructor
-OpenAIParser::OpenAIParser(const FCompletionSettings& settings)
+WebUIParser::WebUIParser(const FCompletionSettings& settings)
 	: completionSettings(settings)
 {
 }
 
-OpenAIParser::OpenAIParser(const FChatSettings& settings)
+WebUIParser::WebUIParser(const FCompletionWebUiSettings& settings)
+: webUiSettings(settings)
+{
+}
+
+WebUIParser::WebUIParser(const FChatSettings& settings)
 	: chatSettings(settings)
 {
 }
 
-OpenAIParser::OpenAIParser(const FSpeechSettings& settings)
+WebUIParser::WebUIParser(const FSpeechSettings& settings)
 	: speechSettings(settings)
 {
 }
 
 //De-constructor
-OpenAIParser::~OpenAIParser()
+WebUIParser::~WebUIParser()
 {
 }
 
 // parses a single Completion.
-FCompletion OpenAIParser::ParseCompletionsResponse(const FJsonObject& json)
+FCompletion WebUIParser::ParseCompletionsResponse(const FJsonObject& json) const
 {
 	FCompletion res = {};
 	
@@ -39,29 +42,29 @@ FCompletion OpenAIParser::ParseCompletionsResponse(const FJsonObject& json)
 }
 
 // parses the response info
-FCompletionInfo OpenAIParser::ParseGPTCompletionInfo(const FJsonObject& json)
+FCompletionInfo WebUIParser::ParseGPTCompletionInfo(const FJsonObject& json)
 {
 	FCompletionInfo res = {};
 
-	res.id = json.GetStringField("id");
-	res.object = json.GetStringField("object");
-	res.created = FDateTime::FromUnixTimestamp(json.GetNumberField("created"));
-	res.model = json.GetStringField("model");
+	res.id = json.GetStringField(FString("id"));
+	res.object = json.GetStringField(FString("object"));
+	res.created = FDateTime::FromUnixTimestamp(json.GetNumberField(FString("created")));
+	res.model = json.GetStringField(FString("model"));
 
 	return res;
 }
 
 // parses a single Generated messasge.
-FChatCompletion OpenAIParser::ParseChatCompletion(const FJsonObject& json)
+FChatCompletion WebUIParser::ParseChatCompletion(const FJsonObject& json)
 {
 	FChatCompletion res = {};
 
 	FChatLog message;
 	message.role = EOAChatRole::ASSISTANT;
-	TArray<TSharedPtr<FJsonValue>> choices = json.GetArrayField("choices");
+	TArray<TSharedPtr<FJsonValue>> choices = json.GetArrayField(FString("choices"));
 	TSharedPtr<FJsonValue> choice = choices[0];
-	TSharedPtr<FJsonObject> messageObject = choice->AsObject()->GetObjectField("message");
-	message.content = messageObject->GetStringField("content");
+	TSharedPtr<FJsonObject> messageObject = choice->AsObject()->GetObjectField(FString("message"));
+	message.content = messageObject->GetStringField(FString("content"));
 	//res.index = json.GetIntegerField(TEXT("index"));
 	json.TryGetStringField(TEXT("finish_reason"), res.finishReason);
 	res.message = message;
@@ -69,11 +72,11 @@ FChatCompletion OpenAIParser::ParseChatCompletion(const FJsonObject& json)
 	return res;
 }
 
-FCompletion OpenAIParser::ParseWebIUResponse(const FJsonObject& json)
+FCompletion WebUIParser::ParseWebIUResponse(const FJsonObject& json)
 {
 	FCompletion res = {};
 
-	TArray<TSharedPtr<FJsonValue>> choices = json.GetArrayField("choices");
+	TArray<TSharedPtr<FJsonValue>> choices = json.GetArrayField(FString("choices"));
 	if (choices.IsEmpty())
 	{
 		res.text = TEXT("WebUI RESPONSE CHOICES ARE EMPTY");
@@ -89,7 +92,7 @@ FCompletion OpenAIParser::ParseWebIUResponse(const FJsonObject& json)
 	return res;
 }
 
-FSpeechCompletion OpenAIParser::ParseSpeechCompletion(const FJsonObject&)
+FSpeechCompletion WebUIParser::ParseSpeechCompletion(const FJsonObject&)
 {
 	/*
 *Create speech
@@ -142,13 +145,13 @@ The audio file content.
 	return {};
 }
 
-FString OpenAIParser::ParseTranscriptionCompletion(const FJsonObject& json)
+FString WebUIParser::ParseTranscriptionCompletion(const FJsonObject& json)
 {
-	return json.GetStringField("text");
+	return json.GetStringField(FString("text"));
 }
 
 // parses a single Generated Image.
-FString OpenAIParser::ParseGeneratedImage(FJsonObject& json)
+FString WebUIParser::ParseGeneratedImage(FJsonObject& json)
 {
 	FString res = "";
 	res = json.GetStringField(TEXT("url"));

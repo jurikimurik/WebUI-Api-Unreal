@@ -1,10 +1,9 @@
-// Copyright Kellan Mythen 2023. All rights Reserved.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "Misc/DateTime.h"
 #include "OpenAIDefinitions.h"
+#include "WebUIDefinitions.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -12,21 +11,23 @@
 /**
  * 
  */
-class OPENAIAPI_API OpenAIParser
+class OPENAIAPI_API WebUIParser
 {
 public:
-	OpenAIParser();
-	OpenAIParser(const FCompletionSettings&);
-	OpenAIParser(const FChatSettings&);
-	OpenAIParser(const FSpeechSettings&);
-	~OpenAIParser();
+	WebUIParser();
+	WebUIParser(const FCompletionSettings&);
+	WebUIParser(const FCompletionWebUiSettings&);
+	WebUIParser(const FChatSettings&);
+	WebUIParser(const FSpeechSettings&);
+	~WebUIParser();
 
 	FCompletionSettings completionSettings;
+	FCompletionWebUiSettings webUiSettings;
 	
 	FChatSettings chatSettings;
 	FSpeechSettings speechSettings;
 
-	FCompletion ParseCompletionsResponse(const FJsonObject&);
+	FCompletion ParseCompletionsResponse(const FJsonObject&) const;
 	FCompletionInfo ParseGPTCompletionInfo(const FJsonObject&);
 	FChatCompletion ParseChatCompletion(const FJsonObject&);
 	FCompletion ParseWebIUResponse(const FJsonObject&);
