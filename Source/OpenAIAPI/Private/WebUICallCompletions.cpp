@@ -3,6 +3,7 @@
 
 #include "WebUICallCompletions.h"
 #include "OpenAIUtils.h"
+#include "WebUIParser.h"
 #include "Http.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
@@ -105,7 +106,7 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		}
 
 		
-		OpenAIParser parser(ChatSettings);
+		WebUIParser parser(ChatSettings);
 			//Special method in Parses was created
 		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
 
