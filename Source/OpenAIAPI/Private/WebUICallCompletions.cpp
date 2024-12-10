@@ -109,7 +109,13 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 			//Special method in Parses was created
 		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
 
-		Finished.Broadcast(_out, "", true);
+		if (_out.text.IsEmpty())
+		{
+			Finished.Broadcast(_out, TEXT("Response text is empty."), false);
+		} else
+		{
+			Finished.Broadcast(_out, "", true);	
+		}
 	}
 }
 
