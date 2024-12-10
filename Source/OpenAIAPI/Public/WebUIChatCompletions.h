@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
+#include "WebUIDefinitions.h"
 #include "OpenAIDefinitions.h"
 #include "HttpModule.h"
 #include "WebUIChatCompletions.generated.h"

@@ -2,12 +2,12 @@
 
 
 #include "WebUIChatCompletions.h"
-#include "OpenAIUtils.h"
+#include "WebUIDefinitions.h"
 #include "Http.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
-#include "OpenAIParser.h"
+#include "WebUIParser.h"
 
 
 UWebUIChatCompletions::UWebUIChatCompletions()
@@ -96,7 +96,7 @@ void UWebUIChatCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	if (FJsonSerializer::Deserialize(reader, responseObject))
 	{
-		bool err = responseObject->HasField("error");
+		bool err = responseObject->HasField(FString("error"));
 
 		if (err)
 		{
@@ -106,7 +106,7 @@ void UWebUIChatCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		}
 
 		
-		OpenAIParser parser(ChatSettings);
+		WebUIParser parser(ChatSettings);
 			//Special method in Parses was created
 		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
 
