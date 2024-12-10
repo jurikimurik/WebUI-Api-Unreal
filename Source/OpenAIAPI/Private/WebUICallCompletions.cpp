@@ -66,7 +66,7 @@ void UWebUICallCompletions::Activate()
 	}
 	else
 	{
-		Finished.Broadcast({}, ("Error sending request"), false);
+		Finished.Broadcast(false, ("Error sending request"),{});
 	}
 }
 
@@ -78,14 +78,14 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		if (!Response)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Error processing request. No response."));
-			Finished.Broadcast({}, ("Error processing request. No response."), false);
+			Finished.Broadcast(false,  ("Error processing request. No response."), {});
 			return;
 		}
 		
 		UE_LOG(LogTemp, Warning, TEXT("Error processing request. \n%s \n%s"), *Response->GetContentAsString(), *Response->GetURL());
 		if (Finished.IsBound())
 		{
-			Finished.Broadcast({}, *Response->GetContentAsString(), false);
+			Finished.Broadcast(false, *Response->GetContentAsString(), {});
 		}
 
 		return;
@@ -100,7 +100,7 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		if (err)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
-			Finished.Broadcast({}, TEXT("Api error"), false);
+			Finished.Broadcast(false, TEXT("Api error"), {});
 			return;
 		}
 
@@ -111,10 +111,10 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 
 		if (_out.text.IsEmpty())
 		{
-			Finished.Broadcast(_out, TEXT("Response text is empty."), false);
+			Finished.Broadcast(false, TEXT("Response text is empty."), _out);
 		} else
 		{
-			Finished.Broadcast(_out, "", true);	
+			Finished.Broadcast(true, "", _out);	
 		}
 	}
 }
