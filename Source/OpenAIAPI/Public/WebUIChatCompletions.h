@@ -9,7 +9,7 @@
 #include "HttpModule.h"
 #include "WebUIChatCompletions.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FChatCompletionWebUI>&, messages);
 
 /**
  * 
@@ -24,18 +24,18 @@ public:
 	~UWebUIChatCompletions();
 
 	// Special setting that is being used for simple generation
-	FCompletionWebUiSettings ChatSettings;
+	FChatCompletionWebUiSettings ChatSettings;
 
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="OpenAI")
-	FOnWebUiChatResponseRecievedPin Finished;
+	FOnWebUiChatResponseRecievedPin Finished2;
 	
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
-	static UWebUIChatCompletions* OpenWebUIChatCompletions(FCompletionWebUiSettings chatSettings, FString Address);
+	static UWebUIChatCompletions* OpenWebUIChatCompletions(FChatCompletionWebUiSettings chatSettings, FString Address);
 
 	virtual void Activate() override;
 	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful);

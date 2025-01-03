@@ -38,3 +38,51 @@ struct FCompletionWebUiSettings
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
 	float seed = 0;
 };
+
+
+
+USTRUCT(BlueprintType)
+struct FChatMessage
+{
+	GENERATED_USTRUCT_BODY()
+
+	//Role of this message
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString role;
+
+	//Content of this message
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString content;
+};
+
+USTRUCT(BlueprintType)
+struct FChatCompletionWebUI
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	int32 index = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString finishReason = "";
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	TArray<FChatMessage> messages;
+};
+
+// Basic settings of one simple chat completion that is used for WebUI
+USTRUCT(BlueprintType)
+struct FChatCompletionWebUiSettings
+{
+	GENERATED_USTRUCT_BODY()
+
+	// <Role -> Content>
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	TArray<FChatMessage> messages;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString mode = "";
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString instructionTemplate = "";
+};
