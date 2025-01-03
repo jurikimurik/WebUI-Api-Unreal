@@ -30,14 +30,18 @@ public:
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="OpenAI")
-	FOnWebUiChatResponseRecievedPin Finished2;
+	FOnWebUiChatResponseRecievedPin Finished;
 	
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
 	static UWebUIChatCompletions* OpenWebUIChatCompletions(FChatCompletionWebUiSettings chatSettings, FString Address);
 
+	TSharedPtr<FJsonObject> BuildPayload();
+	void CommitRequest(::FString, TSharedRef<IHttpRequest, ESPMode::ThreadSafe>, FString _payload);
+	bool CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const;
+
 	virtual void Activate() override;
-	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful);
+	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const;
 	
 };
