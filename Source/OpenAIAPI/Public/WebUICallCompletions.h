@@ -37,6 +37,10 @@ private:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
 	static UWebUICallCompletions* OpenWebUICallCompletions(FCompletionWebUiSettings chatSettings, FString Address);
 
+	TSharedPtr<FJsonObject> BuildPayload();
+	void CommitRequest(::FString, TSharedRef<IHttpRequest, ESPMode::ThreadSafe>, FString _payload);
+	bool CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const;
+
 	virtual void Activate() override;
 	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful);
 	
