@@ -24,7 +24,7 @@ public:
 	~UWebUIChatCompletions();
 
 	// Special setting that is being used for simple generation
-	FChatCompletionWebUiSettings ChatSettings;
+	FChatCompletionGenerationSettings ChatSettings;
 
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";
@@ -35,7 +35,7 @@ public:
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
-	static UWebUIChatCompletions* OpenWebUIChatCompletions(FChatCompletionWebUiSettings chatSettings, FString Address);
+	static UWebUIChatCompletions* OpenWebUIChatCompletions(FChatCompletionGenerationSettings chatSettings, FString Address);
 
 	TSharedPtr<FJsonObject> BuildPayload();
 	void CommitRequest(::FString, TSharedRef<IHttpRequest, ESPMode::ThreadSafe>, FString _payload);

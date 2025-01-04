@@ -18,7 +18,7 @@ UWebUICallCompletions::~UWebUICallCompletions()
 {
 }
 
-UWebUICallCompletions* UWebUICallCompletions::OpenWebUICallCompletions(FCompletionWebUiSettings ChatSettingsInput, FString Address)
+UWebUICallCompletions* UWebUICallCompletions::OpenWebUICallCompletions(FCompletionGenerationSettings ChatSettingsInput, FString Address)
 {
 	UWebUICallCompletions* BPNode = NewObject<UWebUICallCompletions>();
 	BPNode->ChatSettings = ChatSettingsInput;
@@ -31,15 +31,7 @@ TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload()
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
-	// including the final prompt
-	FString finalPrompt = FString::Printf(TEXT("%s%s%s"), *ChatSettings.startSequence, *ChatSettings.prompt, *ChatSettings.endSequence);
-	_payloadObject->SetStringField(TEXT("prompt"), finalPrompt);
-
-	// including other parameters
-	_payloadObject->SetNumberField(TEXT("max_tokens"), ChatSettings.maxTokens);
-	_payloadObject->SetNumberField(TEXT("temperature"), ChatSettings.temperature);
-	_payloadObject->SetNumberField(TEXT("top_p"), ChatSettings.topP);
-	_payloadObject->SetNumberField(TEXT("seed"), ChatSettings.seed);
+	UWebUIUtils::IncludeCompletionGenerationSettings(_payloadObject, ChatSettings);
 
 	return _payloadObject;
 }

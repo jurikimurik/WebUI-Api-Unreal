@@ -8,7 +8,7 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "WebUIParser.h"
-
+#include "WebUIUtils.h"
 
 
 UWebUIChatCompletions::UWebUIChatCompletions()
@@ -19,7 +19,7 @@ UWebUIChatCompletions::~UWebUIChatCompletions()
 {
 }
 
-UWebUIChatCompletions* UWebUIChatCompletions::OpenWebUIChatCompletions(FChatCompletionWebUiSettings ChatSettingsInput, FString Address)
+UWebUIChatCompletions* UWebUIChatCompletions::OpenWebUIChatCompletions(FChatCompletionGenerationSettings ChatSettingsInput, FString Address)
 {
 	UWebUIChatCompletions* BPNode = NewObject<UWebUIChatCompletions>();
 	BPNode->ChatSettings = ChatSettingsInput;
@@ -33,21 +33,7 @@ TSharedPtr<FJsonObject> UWebUIChatCompletions::BuildPayload()
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
 	//Creating and loading messages array
-	TArray <TSharedPtr<FJsonValue>> Messages;
-	{
-		for (auto message : ChatSettings.messages)
-		{
-			TSharedPtr<FJsonObject> messageObject = MakeShareable(new FJsonObject());
-			messageObject->SetStringField("role", message.role);
-			messageObject->SetStringField("content", message.content);
-			TSharedRef<FJsonValueObject> StringValue = MakeShareable(new FJsonValueObject(messageObject));
-			Messages.Add(StringValue);
-		}
-		
-	}
-	_payloadObject->SetArrayField("messages", Messages);
-	_payloadObject->SetStringField(TEXT("mode"), ChatSettings.mode);
-	_payloadObject->SetStringField(TEXT("instruction_template"), ChatSettings.instructionTemplate);
+	UWebUIUtils::IncludeChatGenerationSettings(_payloadObject, ChatSettings);
 
 	return _payloadObject;
 }

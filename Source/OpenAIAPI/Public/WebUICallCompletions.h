@@ -7,6 +7,7 @@
 #include "OpenAIDefinitions.h"
 #include "WebUIDefinitions.h"
 #include "HttpModule.h"
+#include "WebUIUtils.h"
 #include "WebUICallCompletions.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
@@ -24,7 +25,7 @@ public:
 	~UWebUICallCompletions();
 
 	// Special setting that is being used for simple generation
-	FCompletionWebUiSettings ChatSettings;
+	FCompletionGenerationSettings ChatSettings;
 
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";
@@ -35,8 +36,8 @@ public:
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
-	static UWebUICallCompletions* OpenWebUICallCompletions(FCompletionWebUiSettings chatSettings, FString Address);
-
+	static UWebUICallCompletions* OpenWebUICallCompletions(FCompletionGenerationSettings chatSettings, FString Address);
+	
 	TSharedPtr<FJsonObject> BuildPayload();
 	void CommitRequest(::FString, TSharedRef<IHttpRequest, ESPMode::ThreadSafe>, FString _payload);
 	bool CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const;
