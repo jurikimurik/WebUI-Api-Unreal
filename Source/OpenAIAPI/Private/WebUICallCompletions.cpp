@@ -101,6 +101,8 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 
 	TSharedPtr<FJsonObject> responseObject;
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
+	
 	if (FJsonSerializer::Deserialize(reader, responseObject))
 	{
 		bool err = responseObject->HasField("error");
@@ -124,6 +126,9 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		{
 			Finished.Broadcast(true, "", _out);	
 		}
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot deseralize object"));
 	}
 }
 

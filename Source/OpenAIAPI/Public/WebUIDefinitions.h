@@ -334,7 +334,7 @@ struct FBasicGenerationSettings
 	 * I recommend unchecking this parameter on high latency networks like running the webui on Google Colab or using --share.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool Stream = true;
+	bool Stream = false;
 	
 	/**
 	 * Allows you to customize the order in which the different samplers are applied.
