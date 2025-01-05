@@ -18,6 +18,10 @@ public:
 	WebUIParser(const FCompletionSettings&);
 	WebUIParser(const FCompletionWebUiSettings&);
 	WebUIParser(const FChatCompletionWebUiSettings&);
+
+	WebUIParser(const FCompletionGenerationSettings&);
+	WebUIParser(const FChatCompletionGenerationSettings&);
+	
 	WebUIParser(const FChatSettings&);
 	WebUIParser(const FSpeechSettings&);
 	~WebUIParser();
@@ -25,6 +29,9 @@ public:
 	FCompletionSettings completionSettings;
 	FCompletionWebUiSettings webUiSettings;
 	FChatCompletionWebUiSettings chatWebUiSettings;
+
+	FCompletionGenerationSettings CompletionGenerationSettings;
+	FChatCompletionGenerationSettings ChatCompletionGenerationSettings;
 	
 	FChatSettings chatSettings;
 	FSpeechSettings speechSettings;

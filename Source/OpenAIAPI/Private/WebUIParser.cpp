@@ -19,6 +19,16 @@ WebUIParser::WebUIParser(const FChatCompletionWebUiSettings& settings)
 {
 }
 
+WebUIParser::WebUIParser(const FCompletionGenerationSettings& settings)
+	: CompletionGenerationSettings(settings)
+{
+}
+
+WebUIParser::WebUIParser(const FChatCompletionGenerationSettings& settings)
+	: ChatCompletionGenerationSettings(settings)
+{
+}
+
 WebUIParser::WebUIParser(const FChatSettings& settings)
 	: chatSettings(settings)
 {
