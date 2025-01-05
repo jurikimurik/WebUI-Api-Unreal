@@ -93,7 +93,43 @@ void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared,
 			Shared->SetStringField(TEXT("present"), Basics.Preset);
 		if (!Basics.User.IsEmpty())
 			Shared->SetStringField(TEXT("user"), Basics.User);
-	
+
+
+	//Custom JSON Parameters
+	for (const FCustomJSONParameter& param : Basics.CustomJSONParameters)
+	{
+		//Write to JSON will depend on type of the parameter.
+		switch (param.Type)
+		{
+		case JSONTypeParameter::Number:
+			
+			if (param.JsonValue.IsNumeric())
+			{
+				Shared->SetNumberField(param.JsonName, FCString::Atof(*param.JsonValue));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
+			}
+			break;
+			
+		case JSONTypeParameter::Integer:
+			
+			if (param.JsonValue.IsNumeric())
+			{
+				Shared->SetNumberField(param.JsonName, FCString::Atoi(*param.JsonValue));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
+			}
+			break;
+			
+		case JSONTypeParameter::String:
+			Shared->SetStringField(param.JsonName, param.JsonValue);
+			break;
+		}
+	}
 
 	//Objects + Optional
 	// TODO: LogitBias

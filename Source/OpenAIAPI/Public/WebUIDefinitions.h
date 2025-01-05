@@ -87,6 +87,35 @@ struct FChatCompletionWebUiSettings
 	FString instructionTemplate = "";
 };
 
+// Type of JSON setting parameter
+UENUM()
+enum class JSONTypeParameter
+{
+	Number,
+	Integer,
+	String
+};
+
+// Custom JSON parameters to include
+USTRUCT(BlueprintType)
+struct FCustomJSONParameter
+{
+	GENERATED_USTRUCT_BODY()
+
+	//Type of the JSON parameter (Only Number, Integer and String are supported)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	JSONTypeParameter Type = JSONTypeParameter::Number;
+
+	// JSON name of the parameter
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString JsonName;
+
+	// Value of the parameter
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString JsonValue;
+	
+};
+
 //Basic generation parameters (obtained from text-generator-webui in FastAPI (http://127.0.0.1:5000/docs#/))
 USTRUCT(BlueprintType)
 struct FBasicGenerationSettings
@@ -437,6 +466,13 @@ struct FBasicGenerationSettings
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
 	int32 PromptLookupNumTokens = 0;
+
+	
+	/**
+	 * Custom JSON parameter that should be included.
+	 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	TArray<FCustomJSONParameter> CustomJSONParameters;
 	
 };
 
