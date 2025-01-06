@@ -2,13 +2,12 @@
 
 
 #include "WebUICallCompletions.h"
-#include "OpenAIUtils.h"
 #include "WebUIParser.h"
 #include "Http.h"
+#include "WebUIUtils.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
-#include "OpenAIParser.h"
 
 UWebUICallCompletions::UWebUICallCompletions()
 {

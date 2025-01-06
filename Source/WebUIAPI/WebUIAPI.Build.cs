@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class OpenAIAPI : ModuleRules
+public class WebUIAPI : ModuleRules
 {
-	public OpenAIAPI(ReadOnlyTargetRules Target) : base(Target)
+	public WebUIAPI(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
