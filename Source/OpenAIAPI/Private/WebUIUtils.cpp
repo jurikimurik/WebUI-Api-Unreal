@@ -1,99 +1,118 @@
 ﻿#include "WebUIUtils.h"
 
+namespace JSONUtils
+{
+	//Template method for checking and setting JSON parameter. Using "SetNumberField" by default.
+	template <class T> void CheckAndSet(TSharedPtr<FJsonObject> Shared, const T& Value)
+	{
+		if (Value)
+		{
+			Shared->SetNumberField(Value.JSONParameterName, Value.Value);
+		}
+	}
+
+	template<>
+	void CheckAndSet(TSharedPtr<FJsonObject> Shared, const FBasicJSONSettingBool& boolValue)
+	{
+		if (boolValue)
+		{
+			Shared->SetBoolField(boolValue.JSONParameterName, boolValue.Value);
+		}
+	}
+
+	template<>
+	void CheckAndSet(TSharedPtr<FJsonObject> Shared, const FBasicJSONSettingString& stringValue)
+	{
+		if (stringValue)
+		{
+			Shared->SetStringField(stringValue.JSONParameterName, stringValue.Value);
+		}
+	}
+
+	template<>
+	void CheckAndSet(TSharedPtr<FJsonObject> Shared, const FBasicJSONSettingStringArray& stringArrayValue)
+	{
+		if (stringArrayValue)
+		{
+			TArray <TSharedPtr<FJsonValue>> strings;
+			for (const FString& valueStr : stringArrayValue.Value)
+			{
+				TSharedPtr<FJsonValueString> jsonStr = MakeShareable(new FJsonValueString(valueStr));
+				strings.Add(jsonStr);
+			}
+			Shared->SetArrayField(stringArrayValue.JSONParameterName, strings);
+		}
+	}
+}
+
 
 void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared, const FBasicGenerationSettings& Basics)
 {
+	using namespace JSONUtils;
+	
 	//Array<String>
 		// Optional Arguments
-		if (!Basics.Stop.IsEmpty())
-		{
-			TArray <TSharedPtr<FJsonValue>> StopStrings;
-			for (const FString& stopString : Basics.Stop)
-			{
-				TSharedPtr<FJsonValueString> stopStr = MakeShareable(new FJsonValueString(stopString));
-				StopStrings.Add(stopStr);
-			}
-			Shared->SetArrayField("stop", StopStrings);
-		}
-		if (!Basics.SamplerPriority.IsEmpty())
-		{
-			TArray <TSharedPtr<FJsonValue>> Samplers;
-			for (const FString& samplerStr : Basics.SamplerPriority)
-			{
-				TSharedPtr<FJsonValueString> sampler = MakeShareable(new FJsonValueString(samplerStr));
-				Samplers.Add(sampler);
-			}
-			Shared->SetArrayField("sampler_priority", Samplers);
-		}
+		CheckAndSet(Shared, Basics.Stop);
+		CheckAndSet(Shared, Basics.SamplerPriority);
 
 	//Booleans
-	Shared->SetBoolField(TEXT("add_bos_token"), Basics.AddBosToken);
-	Shared->SetBoolField(TEXT("auto_max_new_tokens"), Basics.AutoMaxNewTokens);
-	Shared->SetBoolField(TEXT("ban_eos_token"), Basics.BanEosToken);
-	Shared->SetBoolField(TEXT("do_sample"), Basics.DoSample);
-	Shared->SetBoolField(TEXT("dynamic_temperature"), Basics.DynamicTemperature);
-	Shared->SetBoolField(TEXT("skip_special_tokens"), Basics.SkipSpecialTokens);
-	Shared->SetBoolField(TEXT("temperature_last"), Basics.TemperatureLast);
+	CheckAndSet(Shared, Basics.AddBosToken);
+	CheckAndSet(Shared, Basics.AutoMaxNewTokens);
+	CheckAndSet(Shared, Basics.BanEosToken);
+	CheckAndSet(Shared, Basics.DoSample);
+	CheckAndSet(Shared, Basics.DynamicTemperature);
+	CheckAndSet(Shared, Basics.SkipSpecialTokens);
+	CheckAndSet(Shared, Basics.TemperatureLast);
 		//Optional Arguments
-		if (Basics.Stream)
-			Shared->SetBoolField("stream", Basics.Stream);
-
+		CheckAndSet(Shared, Basics.Stream);
 
 	//Integers
-	Shared->SetNumberField(TEXT("max_tokens_second"), Basics.MaxTokensSecond);
-	Shared->SetNumberField(TEXT("mirostat_mode"), Basics.MirostatMode);
-	Shared->SetNumberField(TEXT("no_repeat_ngram_size"), Basics.NoRepeatNgramSize);
-	Shared->SetNumberField(TEXT("prompt_lookup_num_tokens"), Basics.PromptLookupNumTokens);
-	Shared->SetNumberField(TEXT("repetition_penalty_range"), Basics.RepetitionPenaltyRange);
-	Shared->SetNumberField(TEXT("seed"), Basics.Seed);
-	Shared->SetNumberField(TEXT("top_k"), Basics.TopK);
-	Shared->SetNumberField(TEXT("truncation_length"), Basics.TruncationLength);
+	CheckAndSet(Shared, Basics.MaxTokensSecond);
+	CheckAndSet(Shared, Basics.MirostatMode);
+	CheckAndSet(Shared, Basics.NoRepeatNgramSize);
+	CheckAndSet(Shared, Basics.PromptLookupNumTokens);
+	CheckAndSet(Shared, Basics.RepetitionPenaltyRange);
+	CheckAndSet(Shared, Basics.Seed);
+	CheckAndSet(Shared, Basics.TopK);
+	CheckAndSet(Shared, Basics.TruncationLength);
 		//Optionals
-		if (!Basics.MaxTokens)
-			Shared->SetNumberField(TEXT("max_tokens"), Basics.MaxTokens);
-		if (!Basics.N)
-			Shared->SetNumberField(TEXT("n"), Basics.N);
-
+		CheckAndSet(Shared, Basics.MaxTokens);
+		CheckAndSet(Shared, Basics.N);
+		
 	//Numbers
-	Shared->SetNumberField(TEXT("dynatemp_exponent"), Basics.DynaTempExponent);
-	Shared->SetNumberField(TEXT("dynatemp_high"), Basics.DynaTempHigh);
-	Shared->SetNumberField(TEXT("dynatemp_low"), Basics.DynaTempLow);
-	Shared->SetNumberField(TEXT("encoder_repetition_penalty"), Basics.EncoderRepetitionPenalty);
-	Shared->SetNumberField(TEXT("epsilon_cutoff"), Basics.EpsilonCutoff);
-	Shared->SetNumberField(TEXT("eta_cutoff"), Basics.EtaCutoff);
-	Shared->SetNumberField(TEXT("guidance_scale"), Basics.GuidanceScale);
-	Shared->SetNumberField(TEXT("min_p"), Basics.MinP);
-	Shared->SetNumberField(TEXT("mirostat_eta"), Basics.MirostatEta);
-	Shared->SetNumberField(TEXT("mirostat_tau"), Basics.MirostatTau);
-	Shared->SetNumberField(TEXT("penalty_alpha"), Basics.PenaltyAlpha);
-	Shared->SetNumberField(TEXT("repetition_penalty"), Basics.RepetitionPenalty);
-	Shared->SetNumberField(TEXT("smoothing_curve"), Basics.SmoothingCurve);
-	Shared->SetNumberField(TEXT("smoothing_factor"), Basics.SmoothingFactor);
-	Shared->SetNumberField(TEXT("tfs"), Basics.Tfs);
-	Shared->SetNumberField(TEXT("top_a"), Basics.TopA);
-	Shared->SetNumberField(TEXT("typical_p"), Basics.TypicalP);
+	CheckAndSet(Shared, Basics.DynaTempExponent);
+	CheckAndSet(Shared, Basics.DynaTempHigh);
+	CheckAndSet(Shared, Basics.DynaTempLow);
+	CheckAndSet(Shared, Basics.EncoderRepetitionPenalty);
+	CheckAndSet(Shared, Basics.EpsilonCutoff);
+	CheckAndSet(Shared, Basics.EtaCutoff);
+	CheckAndSet(Shared, Basics.GuidanceScale);
+	CheckAndSet(Shared, Basics.MinP);
+	CheckAndSet(Shared, Basics.MirostatEta);
+	CheckAndSet(Shared, Basics.MirostatTau);
+	CheckAndSet(Shared, Basics.PenaltyAlpha);
+	CheckAndSet(Shared, Basics.RepetitionPenalty);
+	CheckAndSet(Shared, Basics.SmoothingCurve);
+	CheckAndSet(Shared, Basics.SmoothingFactor);
+	CheckAndSet(Shared, Basics.Tfs);
+	CheckAndSet(Shared, Basics.TopA);
+	CheckAndSet(Shared, Basics.TypicalP);
+	
 		//Optional
-		if (!Basics.FrequencyPenalty)
-			Shared->SetNumberField(TEXT("frequency_penalty"), Basics.FrequencyPenalty);
-		if (!Basics.PresencePenalty)
-			Shared->SetNumberField(TEXT("presence_penalty"), Basics.PresencePenalty);
-		if (!Basics.Temperature)
-			Shared->SetNumberField(TEXT("temperature"), Basics.Temperature);
-		if (!Basics.TopP)
-			Shared->SetNumberField(TEXT("top_p"), Basics.TopP);
-
+		CheckAndSet(Shared, Basics.FrequencyPenalty);
+		CheckAndSet(Shared, Basics.PresencePenalty);
+		CheckAndSet(Shared, Basics.Temperature);
+		CheckAndSet(Shared, Basics.TopP);
+		
 	//Strings
-	Shared->SetStringField(TEXT("custom_token_bans"), Basics.CustomTokenBans);
-	Shared->SetStringField(TEXT("grammar_string"), Basics.GrammarString);
-	Shared->SetStringField(TEXT("negative_prompt"), Basics.NegativePrompt);
+	CheckAndSet(Shared, Basics.CustomTokenBans);
+	CheckAndSet(Shared, Basics.GrammarString);
+	CheckAndSet(Shared, Basics.NegativePrompt);
 		//Optionals
-		if (!Basics.Model.IsEmpty())
-			Shared->SetStringField(TEXT("model"), Basics.Model);
-		if (!Basics.Preset.IsEmpty())
-			Shared->SetStringField(TEXT("present"), Basics.Preset);
-		if (!Basics.User.IsEmpty())
-			Shared->SetStringField(TEXT("user"), Basics.User);
-
+		CheckAndSet(Shared, Basics.Model);
+		CheckAndSet(Shared, Basics.Preset);
+		CheckAndSet(Shared, Basics.User);
+		
 
 	//Custom JSON Parameters
 	for (const FCustomJSONParameter& param : Basics.CustomJSONParameters)
@@ -138,32 +157,31 @@ void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared,
 void UWebUIUtils::IncludeCompletionGenerationSettings(TSharedPtr<FJsonObject> Shared,
 	const FCompletionGenerationSettings& CompletionSettings)
 {
+	using namespace JSONUtils;
 	IncludeBasicGenerationSettings(Shared, CompletionSettings.Basics);
 
+	
 
 	//Booleans + Optional
-	if (CompletionSettings.Echo)
-		Shared->SetBoolField(TEXT("echo"), CompletionSettings.Echo);
-	
+	CheckAndSet(Shared, CompletionSettings.Echo);
 	
 	//Integers + Optionals
-	if (CompletionSettings.BestOf)
-		Shared->SetNumberField(TEXT("best_of"), CompletionSettings.BestOf);
-	if (CompletionSettings.LogProbs)
-		Shared->SetNumberField(TEXT("log_prob"), CompletionSettings.LogProbs);
+	CheckAndSet(Shared, CompletionSettings.BestOf);
+	CheckAndSet(Shared, CompletionSettings.LogProbs);
 	
 	//Strings
-	Shared->SetStringField("prompt", CompletionSettings.prompt);
+	CheckAndSet(Shared, CompletionSettings.prompt);
 		//Optionals
-		if (!CompletionSettings.Suffix.IsEmpty())
-			Shared->SetStringField(TEXT("suffix"), CompletionSettings.Suffix);
+		CheckAndSet(Shared, CompletionSettings.Suffix);
 }
 
 void UWebUIUtils::IncludeChatGenerationSettings(TSharedPtr<FJsonObject> Shared,
 	const FChatCompletionGenerationSettings& ChatSettings)
 {
+	using namespace JSONUtils;
 	IncludeBasicGenerationSettings(Shared, ChatSettings.Basics);
-
+	
+	
 	//Array<Object>
 	TArray <TSharedPtr<FJsonValue>> Messages;
 	{
@@ -183,31 +201,20 @@ void UWebUIUtils::IncludeChatGenerationSettings(TSharedPtr<FJsonObject> Shared,
 	
 	
 	//Booleans
-	Shared->SetBoolField(TEXT("continue_"), ChatSettings.Continue_);
+	CheckAndSet(Shared, ChatSettings.Continue_);
 	
 	//Strings
-	Shared->SetStringField(TEXT("mode"), ChatSettings.Mode);
-	if (!ChatSettings.FunctionCall.IsEmpty())
-		Shared->SetStringField(TEXT("function_call"), ChatSettings.FunctionCall);
-	if (!ChatSettings.Character.IsEmpty())
-		Shared->SetStringField(TEXT("character"), ChatSettings.Character);
-	if (!ChatSettings.ChatInstructCommand.IsEmpty())
-		Shared->SetStringField(TEXT("chat_instruct_command"), ChatSettings.ChatInstructCommand);
-	if (!ChatSettings.ChatTemplateStr.IsEmpty())
-		Shared->SetStringField(TEXT("chat_template_str"), ChatSettings.ChatTemplateStr);
-	if (!ChatSettings.Context.IsEmpty())
-		Shared->SetStringField(TEXT("context"), ChatSettings.Context);
-	if (!ChatSettings.Greeting.IsEmpty())
-		Shared->SetStringField(TEXT("greeting"), ChatSettings.Greeting);
-	if (!ChatSettings.InstructionTemplate.IsEmpty())
-		Shared->SetStringField(TEXT("instruction_template"), ChatSettings.InstructionTemplate);
-	if (!ChatSettings.InstructionTemplateStr.IsEmpty())
-		Shared->SetStringField(TEXT("instruction_template_str"), ChatSettings.InstructionTemplate);
-	if (!ChatSettings.Name1.IsEmpty())
-		Shared->SetStringField(TEXT("name1"), ChatSettings.Name1);
-	if (!ChatSettings.Name2.IsEmpty())
-		Shared->SetStringField(TEXT("name2"), ChatSettings.Name2);
-	if (!ChatSettings.UserBio.IsEmpty())
-		Shared->SetStringField(TEXT("user_bio"), ChatSettings.UserBio);
+	CheckAndSet(Shared, ChatSettings.Mode);
+	CheckAndSet(Shared, ChatSettings.FunctionCall);
+	CheckAndSet(Shared, ChatSettings.Character);
+	CheckAndSet(Shared, ChatSettings.ChatInstructCommand);
+	CheckAndSet(Shared, ChatSettings.ChatTemplateStr);
+	CheckAndSet(Shared, ChatSettings.Context);
+	CheckAndSet(Shared, ChatSettings.Greeting);
+	CheckAndSet(Shared, ChatSettings.InstructionTemplate);
+	CheckAndSet(Shared, ChatSettings.InstructionTemplateStr);
+	CheckAndSet(Shared, ChatSettings.Name1);
+	CheckAndSet(Shared, ChatSettings.Name2);
+	CheckAndSet(Shared, ChatSettings.UserBio);
 	
 }
