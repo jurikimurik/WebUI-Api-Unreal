@@ -36,11 +36,11 @@ private:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
 	static UWebUICallCompletions* OpenWebUICallCompletions(FCompletionGenerationSettings chatSettings, FString Address);
 	
-	TSharedPtr<FJsonObject> BuildPayload();
-	void CommitRequest(::FString, TSharedRef<IHttpRequest, ESPMode::ThreadSafe>, FString _payload);
-	bool CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const;
+	TSharedPtr<FJsonObject> BuildPayload() const;
+	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);
+	bool CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const;
 
 	virtual void Activate() override;
-	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful);
+	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const;
 	
 };

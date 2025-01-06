@@ -250,7 +250,7 @@ struct FBasicGenerationSettings
 {
 	GENERATED_USTRUCT_BODY()
 	
-	//Definiotns from https://github.com/oobabooga/text-generation-webui/wiki/03-%E2%80%90-Parameters-Tab
+	//Definitions from https://github.com/oobabooga/text-generation-webui/wiki/03-%E2%80%90-Parameters-Tab
 
 	/**
 	 * Maximum number of tokens to generate.

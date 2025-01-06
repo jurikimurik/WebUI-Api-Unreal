@@ -92,7 +92,7 @@ FString WebUIParser::ParseTranscriptionCompletion(const FJsonObject& json)
 }
 
 // parses a single Generated Image.
-FString WebUIParser::ParseGeneratedImage(FJsonObject& json)
+FString WebUIParser::ParseGeneratedImage(const FJsonObject& json)
 {
 	FString res = "";
 	res = json.GetStringField(TEXT("url"));

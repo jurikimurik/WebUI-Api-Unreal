@@ -25,7 +25,7 @@ UWebUICallCompletions* UWebUICallCompletions::OpenWebUICallCompletions(FCompleti
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload()
+TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload() const
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
@@ -35,7 +35,7 @@ TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload()
 	return _payloadObject;
 }
 
-void UWebUICallCompletions::CommitRequest(FString Verb, TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest, FString _payload)
+void UWebUICallCompletions::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
 	
@@ -54,7 +54,7 @@ void UWebUICallCompletions::CommitRequest(FString Verb, TSharedRef<IHttpRequest,
 	}
 }
 
-bool UWebUICallCompletions::CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const
+bool UWebUICallCompletions::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -97,7 +97,7 @@ void UWebUICallCompletions::Activate()
 	CommitRequest("POST", HttpRequest,_payload);
 }
 
-void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful)
+void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 
@@ -107,9 +107,7 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 	
 	if (FJsonSerializer::Deserialize(reader, responseObject))
 	{
-		bool err = responseObject->HasField(TEXT("error"));
-
-		if (err)
+		if (responseObject->HasField(TEXT("error")))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 			Finished.Broadcast(false, TEXT("Api error"), {});
@@ -118,7 +116,7 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 
 		
 		WebUIParser parser(ChatSettings);
-			//Special method in Parses was created
+		//Special method in Parses was created
 		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
 
 		if (_out.Text.IsEmpty())
@@ -130,7 +128,8 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		}
 	} else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot deseralize object"));
+		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
 	}
 }
+
 

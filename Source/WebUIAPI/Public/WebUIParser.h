@@ -13,7 +13,7 @@
 class WEBUIAPI_API WebUIParser
 {
 public:
-	WebUIParser();
+	WebUIParser() = default;
 	WebUIParser(const FCompletionWebUiSettings&);
 	WebUIParser(const FChatCompletionWebUiSettings&);
 
@@ -28,14 +28,10 @@ public:
 
 	FCompletionGenerationSettings CompletionGenerationSettings;
 	FChatCompletionGenerationSettings ChatCompletionGenerationSettings;
-	
 
+	static FCompletion ParseWebIUResponse(const FJsonObject&);
+	static TArray<FChatCompletionWebUI> ParseChatWebUIResponse(const FJsonObject&);
 
-	FCompletion ParseCompletionsResponse(const FJsonObject&) const;
-
-	FCompletion ParseWebIUResponse(const FJsonObject&);
-	TArray<FChatCompletionWebUI> ParseChatWebUIResponse(const FJsonObject&);
-
-	FString ParseTranscriptionCompletion(const FJsonObject&);
-	FString ParseGeneratedImage(FJsonObject&);
+	static FString ParseTranscriptionCompletion(const FJsonObject&);
+	static FString ParseGeneratedImage(const FJsonObject&);
 };
