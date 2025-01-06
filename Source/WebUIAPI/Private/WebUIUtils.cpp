@@ -188,8 +188,8 @@ void UWebUIUtils::IncludeChatGenerationSettings(TSharedPtr<FJsonObject> Shared,
 		for (auto message : ChatSettings.Messages)
 		{
 			TSharedPtr<FJsonObject> messageObject = MakeShareable(new FJsonObject());
-			messageObject->SetStringField("role", message.role);
-			messageObject->SetStringField("content", message.content);
+			messageObject->SetStringField("role", message.Role);
+			messageObject->SetStringField("content", message.Content);
 			TSharedRef<FJsonValueObject> StringValue = MakeShareable(new FJsonValueObject(messageObject));
 			Messages.Add(StringValue);
 		}
