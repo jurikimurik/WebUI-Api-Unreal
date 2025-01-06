@@ -3,6 +3,21 @@
 #include "CoreMinimal.h"
 #include "WebUIDefinitions.generated.h"
 
+USTRUCT(BlueprintType)
+struct FCompletion
+{
+	GENERATED_USTRUCT_BODY()
+
+	// Similar to OpenAI's response.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString text = "";
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	int32 index = 0;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString finishReason = "";
+};
 
 // Basic settings of one simple completion that is used for WebUI
 USTRUCT(BlueprintType)

@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "OpenAIDefinitions.h"
 #include "WebUIDefinitions.h"
 #include "HttpModule.h"
-#include "WebUIUtils.h"
 #include "WebUICallCompletions.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
@@ -16,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiResponseRecievedPin, bool
  * 
  */
 UCLASS()
-class OPENAIAPI_API UWebUICallCompletions : public UBlueprintAsyncActionBase
+class WEBUIAPI_API UWebUICallCompletions : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 

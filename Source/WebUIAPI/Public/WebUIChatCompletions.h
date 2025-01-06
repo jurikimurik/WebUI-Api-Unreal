@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "WebUIDefinitions.h"
-#include "OpenAIDefinitions.h"
 #include "HttpModule.h"
 #include "WebUIChatCompletions.generated.h"
 
@@ -15,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatResponseRecievedPin, 
  * 
  */
 UCLASS()
-class OPENAIAPI_API UWebUIChatCompletions : public UBlueprintAsyncActionBase
+class WEBUIAPI_API UWebUIChatCompletions : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 

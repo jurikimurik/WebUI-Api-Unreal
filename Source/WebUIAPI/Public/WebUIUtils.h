@@ -17,7 +17,7 @@
 #include "WebUIUtils.generated.h"
 
 UCLASS()
-class OPENAIAPI_API UWebUIUtils : public UBlueprintFunctionLibrary
+class WEBUIAPI_API UWebUIUtils : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
