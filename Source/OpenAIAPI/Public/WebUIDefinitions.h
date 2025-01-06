@@ -87,6 +87,87 @@ struct FChatCompletionWebUiSettings
 	FString instructionTemplate = "";
 };
 
+// JSON PARAMETERS -----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * Basic structure for all JSON parameters.
+ * Cast to bool - return if this parameter is enabled.
+ * Cast to FString - return associated JSON name of this parameter.
+ */
+USTRUCT(BlueprintType)
+struct FBasicJSONSetting
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FBasicJSONSetting() = default;
+	FBasicJSONSetting(const bool& isEnabled, const FString& JSONName) : IsEnabled(isEnabled), JSONParameterName(JSONName) {}
+
+	//Should this parameter be included in JSON?
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	bool IsEnabled = true;
+
+	//The associated name in JSON format for this parameter.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString JSONParameterName = TEXT("");
+
+	//Auto-conversion to bool for fast checking if this parameter enabled.
+	explicit operator bool() const
+	{
+		return IsEnabled;
+	}
+
+	//Auto-conversion to FString to retrieve parameter name.
+	explicit operator FString() const
+	{
+		return JSONParameterName;
+	}
+};
+
+// Boolean JSON parameter.
+USTRUCT(BlueprintType)
+struct FBasicJSONSettingBool : public FBasicJSONSetting
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FBasicJSONSettingBool() = default;
+	FBasicJSONSettingBool(const bool& value, const bool& isEnabled, const FString& JSONName) : FBasicJSONSetting(isEnabled, JSONName), Value(value) {}
+	
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	bool Value = false;
+};
+
+//Integer JSON parameter.
+USTRUCT(BlueprintType)
+struct FBasicJSONSettingInteger : public FBasicJSONSetting
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FBasicJSONSettingInteger() = default;
+	FBasicJSONSettingInteger(const int32& value, const bool& isEnabled, const FString& JSONName) : FBasicJSONSetting(isEnabled, JSONName), Value(value) {}
+	
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	int32 Value = 0;
+};
+
+//String JSON parameter.
+USTRUCT(BlueprintType)
+struct FBasicJSONSettingString : public FBasicJSONSetting
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FBasicJSONSettingString() = default;
+	FBasicJSONSettingString(const FString& value, const bool& isEnabled, const FString& JSONName) : FBasicJSONSetting(isEnabled, JSONName), Value(value) {}
+	
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	FString Value = TEXT("");
+};
+
+// JSON CUSTOM PARAMETERS -----------------------------------------------------------------------------------------------------------------------------------------------
+
 // Type of JSON setting parameter
 UENUM()
 enum class JSONTypeParameter
@@ -116,6 +197,9 @@ struct FCustomJSONParameter
 	
 };
 
+
+// GENERATION JSON SETTINGS ------------------------------------------------------------------------------------------------------------------------------------------------------
+
 //Basic generation parameters (obtained from text-generator-webui in FastAPI (http://127.0.0.1:5000/docs#/))
 USTRUCT(BlueprintType)
 struct FBasicGenerationSettings
@@ -130,8 +214,9 @@ struct FBasicGenerationSettings
 	 * so your prompt will get truncated if you set it too high.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	//FBasicJSONSettingInteger MaxTokens = FBasicJSONSettingInteger(200, true, "max_tokens");
 	int32 MaxTokens = 200;
-
+	
 	/**
 	 * Primary factor to control the randomness of outputs. 0 = deterministic (only the most likely token is used). Higher value = more randomness.
 	 */

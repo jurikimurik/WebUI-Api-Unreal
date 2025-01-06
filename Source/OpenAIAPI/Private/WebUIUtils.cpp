@@ -49,7 +49,7 @@ void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared,
 	Shared->SetNumberField(TEXT("top_k"), Basics.TopK);
 	Shared->SetNumberField(TEXT("truncation_length"), Basics.TruncationLength);
 		//Optionals
-		if (!Basics.MaxTokens)
+		if (Basics.MaxTokens)
 			Shared->SetNumberField(TEXT("max_tokens"), Basics.MaxTokens);
 		if (!Basics.N)
 			Shared->SetNumberField(TEXT("n"), Basics.N);
