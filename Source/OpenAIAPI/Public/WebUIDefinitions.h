@@ -166,6 +166,34 @@ struct FBasicJSONSettingString : public FBasicJSONSetting
 	FString Value = TEXT("");
 };
 
+//Number JSON parameter.
+USTRUCT(BlueprintType)
+struct FBasicJSONSettingFloat : public FBasicJSONSetting
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FBasicJSONSettingFloat() = default;
+	FBasicJSONSettingFloat(const float& value, const bool& isEnabled, const FString& JSONName) : FBasicJSONSetting(isEnabled, JSONName), Value(value) {}
+	
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	float Value = 0.0;
+};
+
+//Strings array of JSON parameter.
+USTRUCT(BlueprintType)
+struct FBasicJSONSettingStringArray : public FBasicJSONSetting
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FBasicJSONSettingStringArray() = default;
+	FBasicJSONSettingStringArray(const TArray<FString>& value, const bool& isEnabled, const FString& JSONName) : FBasicJSONSetting(isEnabled, JSONName), Value(value) {}
+	
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
+	TArray<FString> Value = {};
+};
+
 // JSON CUSTOM PARAMETERS -----------------------------------------------------------------------------------------------------------------------------------------------
 
 // Type of JSON setting parameter
@@ -200,12 +228,13 @@ struct FCustomJSONParameter
 
 // GENERATION JSON SETTINGS ------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 //Basic generation parameters (obtained from text-generator-webui in FastAPI (http://127.0.0.1:5000/docs#/))
 USTRUCT(BlueprintType)
 struct FBasicGenerationSettings
 {
 	GENERATED_USTRUCT_BODY()
-
+	
 	//Definiotns from https://github.com/oobabooga/text-generation-webui/wiki/03-%E2%80%90-Parameters-Tab
 
 	/**
@@ -213,8 +242,9 @@ struct FBasicGenerationSettings
 	 * Don't set it higher than necessary: it is used in the truncation calculation through the formula (prompt_length) = min(truncation_length - max_new_tokens, prompt_length),
 	 * so your prompt will get truncated if you set it too high.
 	 */
+
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	//FBasicJSONSettingInteger MaxTokens = FBasicJSONSettingInteger(200, true, "max_tokens");
 	int32 MaxTokens = 200;
 	
 	/**
