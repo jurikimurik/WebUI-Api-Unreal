@@ -245,32 +245,32 @@ struct FBasicGenerationSettings
 
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 MaxTokens = 200;
+	FBasicJSONSettingInteger MaxTokens = FBasicJSONSettingInteger(200, true, TEXT("max_tokens"));
 	
 	/**
 	 * Primary factor to control the randomness of outputs. 0 = deterministic (only the most likely token is used). Higher value = more randomness.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float Temperature = 0.7;
+	FBasicJSONSettingFloat Temperature = FBasicJSONSettingFloat(0.7, true, TEXT("temperature"));
 
 	/**
 	 * If not set to 1, select tokens with probabilities adding up to less than this number. Higher value = higher range of possible random results.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float TopP = 0.9;
+	FBasicJSONSettingFloat TopP = FBasicJSONSettingFloat(0.9, true, TEXT("top_p"));
 
 	/**
 	 * Tokens with probability smaller than (min_p) * (probability of the most likely token) are discarded.
 	 * This is the same as top_a but without squaring the probability.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float MinP = 0;
+	FBasicJSONSettingFloat MinP = FBasicJSONSettingFloat(0, true, TEXT("min_p"));
 
 	/**
 	 * Similar to top_p, but select instead only the top_k most likely tokens. Higher value = higher range of possible random results.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 TopK = 20;
+	FBasicJSONSettingInteger TopK = FBasicJSONSettingInteger(20, true, TEXT("top_k"));
 	
 	/**
 	 * Similar to repetition_penalty, but with an additive offset on the raw token scores instead of a multiplicative factor.
@@ -278,26 +278,26 @@ struct FBasicGenerationSettings
 	 * Previously called "additive_repetition_penalty".
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float PresencePenalty = 0;
+	FBasicJSONSettingFloat PresencePenalty = FBasicJSONSettingFloat(0, true, TEXT("presence_penalty"));
 
 	/**
 	* Repetition penalty that scales based on how many times the token has appeared in the context.
 	 * Be careful with this; there's no limit to how much a token can be penalized.
 	*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float FrequencyPenalty = 0;
+	FBasicJSONSettingFloat FrequencyPenalty = FBasicJSONSettingFloat(0, true, TEXT("frequency_penalty"));
 
 	/**
 	 * The number of most recent tokens to consider for repetition penalty. 0 makes all tokens be used.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 RepetitionPenaltyRange = 1024;
+	FBasicJSONSettingInteger RepetitionPenaltyRange = FBasicJSONSettingInteger(1024, true, TEXT("repetition_penalty_range"));
 
 	/**
 	 * If not set to 1, select only tokens that are at least this much more likely to appear than random tokens, given the prior text.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float TypicalP = 1;
+	FBasicJSONSettingFloat TypicalP = FBasicJSONSettingFloat(1, true, TEXT("typical_p"));
 
 	/**
 	 * Tries to detect a tail of low-probability tokens in the distribution and removes those tokens.
@@ -305,26 +305,26 @@ struct FBasicGenerationSettings
 	 * The closer to 0, the more discarded tokens.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float Tfs = 1;
+	FBasicJSONSettingFloat Tfs = FBasicJSONSettingFloat(1, true, TEXT("tfs"));
 
 	/**
 	 * Tokens with probability smaller than (top_a) * (probability of the most likely token)^2 are discarded.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float TopA = 0;
+	FBasicJSONSettingFloat TopA = FBasicJSONSettingFloat(0, true, TEXT("top_a"));
 
 	/**
 	 * In units of 1e-4; a reasonable value is 3. This sets a probability floor below which tokens are excluded from being sampled.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float EpsilonCutoff = 0;
+	FBasicJSONSettingFloat EpsilonCutoff = FBasicJSONSettingFloat(0, true , TEXT("epsilon_cutoff"));
 
 	/**
 	 * The main parameter for Classifier-Free Guidance (CFG). https://arxiv.org/pdf/2306.17806.pdf suggests that 1.5 is a good value.
 	 * It can be used in conjunction with a negative prompt or not.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float GuidanceScale = 1;
+	FBasicJSONSettingFloat GuidanceScale = FBasicJSONSettingFloat(1, true, TEXT("guidance_scale"));
 
 	/**
 	 * Only used when guidance_scale != 1. It is most useful for instruct models and custom system messages.
@@ -332,47 +332,47 @@ struct FBasicGenerationSettings
 	 * (like "You are Llama, a helpful assistant...") to make the model pay more attention to your custom system message.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString NegativePrompt;
+	FBasicJSONSettingString NegativePrompt = FBasicJSONSettingString(TEXT(""), false, TEXT("negative_prompt"));
 	
 	/**
 	 * Contrastive Search is enabled by setting this to greater than zero and unchecking "do_sample".
 	 * It should be used with a low value of top_k, for instance, top_k = 4.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float PenaltyAlpha = 0;
+	FBasicJSONSettingFloat PenaltyAlpha = FBasicJSONSettingFloat(0, true, TEXT("penalty_alpha"));
 
 	/**
 	 * Activates the Mirostat sampling technique. It aims to control perplexity during sampling.
 	 * See https://arxiv.org/abs/2007.14966
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 MirostatMode = 0;
+	FBasicJSONSettingInteger MirostatMode = FBasicJSONSettingInteger(0, true, TEXT("mirostat_mode"));
 
 	/**
 	 * No idea, see the paper for details. According to the Preset Arena, 8 is a good value.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float MirostatTau = 5;
+	FBasicJSONSettingFloat MirostatTau = FBasicJSONSettingFloat(5, true, TEXT("mirostat_tau"));
 
 	/**
 	 * No idea, see the paper for details. According to the Preset Arena, 0.1 is a good value.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float MirostatEta = 0.1;
+	FBasicJSONSettingFloat MirostatEta = FBasicJSONSettingFloat(0.1, true, TEXT("mirostat_eta"));
 
 	/**
 	* Activates Dynamic Temperature. This modifies temperature to range between "dynatemp_low" (minimum) and "dynatemp_high" (maximum), with an entropy-based scaling.
 	* The steepness of the curve is controlled by "dynatemp_exponent".
 	*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool DynamicTemperature = false;
+	FBasicJSONSettingBool DynamicTemperature = FBasicJSONSettingBool(false, true, TEXT("dynamic_temperature"));
 
 
 	/**
 	 * Activates Quadratic Sampling. When 0 < smoothing_factor < 1, the logits distribution becomes flatter. When smoothing_factor > 1, it becomes more peaked.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float SmoothingFactor = 0;
+	FBasicJSONSettingFloat SmoothingFactor = FBasicJSONSettingFloat(0, true, TEXT("smoothing_factor"));
 
 	/**
 	 * Makes temperature the last sampler instead of the first.
@@ -381,27 +381,27 @@ struct FBasicGenerationSettings
 	 * That means that temperature/dynamic_temperature/quadratic_sampling will be removed from wherever they are and moved to the end of the stack.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool TemperatureLast = false;
+	FBasicJSONSettingBool TemperatureLast = FBasicJSONSettingBool(false, true, TEXT("temperature_last"));
 
 	/**
 	 * When unchecked, sampling is entirely disabled, and greedy decoding is used instead (the most likely token is always picked).
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool DoSample = true;
+	FBasicJSONSettingBool DoSample = FBasicJSONSettingBool(true, true, TEXT("do_sample"));
 
 	/**
 	 * Set the Pytorch seed to this number. Note that some loaders do not use Pytorch (notably llama.cpp), and others are not deterministic (ExLlamaV2).
 	 * For these loaders, the seed has no effect.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 Seed = -1;
+	FBasicJSONSettingInteger Seed = FBasicJSONSettingInteger(-1, true, TEXT("seed"));
 
 	/**
 	 * Also known as the "Hallucinations filter". Used to penalize tokens that are not in the prior text.
 	 * Higher value = more likely to stay in context, lower value = more likely to diverge.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float EncoderRepetitionPenalty = 1;
+	FBasicJSONSettingFloat EncoderRepetitionPenalty = FBasicJSONSettingFloat(1, true, TEXT("encoder_repetition_penalty"));
 
 	/**
 	 *  If not set to 0, specifies the length of token sets that are completely blocked from repeating at all.
@@ -409,7 +409,7 @@ struct FBasicGenerationSettings
 	 *  Only 0 or high values are a good idea in most cases.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 NoRepeatNgramSize = 0;
+	FBasicJSONSettingInteger NoRepeatNgramSize = FBasicJSONSettingInteger(0, true, TEXT("no_repeat_ngram_size"));
 
 	
 	/**
@@ -419,13 +419,13 @@ struct FBasicGenerationSettings
 	 * and from the model metadata directly for loaders that do not) when you load a model.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 TruncationLength = 8192;
+	FBasicJSONSettingInteger TruncationLength =FBasicJSONSettingInteger(8192, true, TEXT("truncation_length"));
 
 	/**
 	 * To make text readable in real-time in case the model is generating too fast. Good if you want to flex and tell everyone how good your GPU is.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 MaxTokensSecond = 0;
+	FBasicJSONSettingInteger MaxTokensSecond = FBasicJSONSettingInteger(0, true, TEXT("max_tokens_second"));
 	
 	/**
 	 * The model stops generating as soon as any of the strings set in this field is generated.
@@ -433,14 +433,14 @@ struct FBasicGenerationSettings
 	 * That's why this parameter has a "Custom" in its name.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	TArray<FString> Stop;
+	FBasicJSONSettingStringArray Stop = FBasicJSONSettingStringArray({}, false, TEXT("stop"));
 
 	/**
 	 * Allows you to ban the model from generating certain tokens altogether.
 	 * You need to find the token IDs under "Default" > "Tokens" or "Notebook" > "Tokens", or by looking at the tokenizer.json for the model directly.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString CustomTokenBans;
+	FBasicJSONSettingString CustomTokenBans = FBasicJSONSettingString(TEXT(""), false, TEXT("custom_token_bans"));
 
 	/**
 	 * When checked, the max_new_tokens parameter is expanded in the backend to the available context length.
@@ -448,7 +448,7 @@ struct FBasicGenerationSettings
 	 * This is useful for getting long replies in the Chat tab without having to click on "Continue" many times.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool AutoMaxNewTokens = false;
+	FBasicJSONSettingBool AutoMaxNewTokens = FBasicJSONSettingBool(false, true, TEXT("auto_max_new_tokens"));
 
 	/**
 	*  One of the possible tokens that a model can generate is the EOS (End of Sequence) token.
@@ -456,7 +456,7 @@ struct FBasicGenerationSettings
 	*  When this parameter is checked, that token is banned from being generated, and the generation will always generate "max_new_tokens" tokens.
 	*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool BanEosToken = false;
+	FBasicJSONSettingBool BanEosToken = FBasicJSONSettingBool(false, true, TEXT("ban_eos_token"));
 
 	/**
 	 * By default, the tokenizer will add a BOS (Beginning of Sequence) token to your prompt.
@@ -465,20 +465,20 @@ struct FBasicGenerationSettings
 	 * This significantly changes the output and can make it more creative.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool AddBosToken = true;
+	FBasicJSONSettingBool AddBosToken = FBasicJSONSettingBool(true, true, TEXT("add_bos_token"));
 	
 	/**
 	 * When decoding the generated tokens, skip special tokens from being converted to their text representation. Otherwise, BOS appears as <s>, EOS as </s>, etc.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool SkipSpecialTokens = true;
+	FBasicJSONSettingBool SkipSpecialTokens = FBasicJSONSettingBool(true, true, TEXT("skip_special_tokens"));
 
 	/**
 	 * When unchecked, the full response is outputted at once, without streaming the words one at a time.
 	 * I recommend unchecking this parameter on high latency networks like running the webui on Google Colab or using --share.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool Stream = false;
+	FBasicJSONSettingBool Stream = FBasicJSONSettingBool(false, false, TEXT("stream"));
 	
 	/**
 	 * Allows you to customize the order in which the different samplers are applied.
@@ -486,9 +486,9 @@ struct FBasicGenerationSettings
 	 * With this, custom orders like top_p -> temperature -> top_k can be defined.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	TArray<FString> SamplerPriority = {	"temperature", "dynamic_temperature", "quadric_sampling", "top_k",
+	FBasicJSONSettingStringArray SamplerPriority = FBasicJSONSettingStringArray({	"temperature", "dynamic_temperature", "quadric_sampling", "top_k",
 										"top_p", "typical_p", "epsilon_cutoff", "eta_cutoff", "tfs",
-										"top_a", "min_p", "mirostat"};
+										"top_a", "min_p", "mirostat"}, true, TEXT("sampler_priority"));
 
 	/**
 	 * Allows you to constrain the model output to a particular format.
@@ -498,62 +498,62 @@ struct FBasicGenerationSettings
 	 * See https://github.com/ggerganov/llama.cpp/blob/master/grammars/README.md for details.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString GrammarString;
+	FBasicJSONSettingString GrammarString = FBasicJSONSettingString(TEXT(""), false, TEXT("grammar_string"));
 
 	/**
 	 * The steepness of the dynamic temperature curve is controlled by this.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float DynaTempExponent = 0;
+	FBasicJSONSettingFloat DynaTempExponent = FBasicJSONSettingFloat(0, false, TEXT("dynatemp_exponent"));
 
 	/**
 	 * Connected with Dynamic Temperature.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float DynaTempHigh = 0;
+	FBasicJSONSettingFloat DynaTempHigh = FBasicJSONSettingFloat(0, false, TEXT("dynatemp_high"));
 
 	/**
 	 * Connected woth Dynamic Temperature.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float DynaTempLow = 0;
+	FBasicJSONSettingFloat DynaTempLow = FBasicJSONSettingFloat(0, false, TEXT("dynatemp_low"));
 	
 
 	/**
 	 * In units of 1e-4; a reasonable value is 3. The main parameter of the special Eta Sampling technique. See https://arxiv.org/pdf/2210.15191.pdf for a description.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float EtaCutoff = 0; 
+	FBasicJSONSettingFloat EtaCutoff = FBasicJSONSettingFloat(0, true, TEXT("eta_cutoff"));
 
 	/**
 	 * The name of the model (?)
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Model;
+	FBasicJSONSettingString Model = FBasicJSONSettingString(TEXT(""), false, TEXT("model"));
 
 	/**
 	 * Can be used to save and load combinations of parameters for reuse.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Preset = "simple-1";
+	FBasicJSONSettingString Preset = FBasicJSONSettingString(TEXT("simple-1"), false, TEXT("preset"));
 
 	/**
 	 * Penalty factor for repeating prior tokens. 1 means no penalty, higher value = less repetition, lower value = more repetition.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float RepetitionPenalty = 1.15;
+	FBasicJSONSettingFloat RepetitionPenalty = FBasicJSONSettingFloat(1.15, true, TEXT("repetition_penalty"));
 
 	/**
 	 * Connected with smoothing factor.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	float SmoothingCurve = 1;
+	FBasicJSONSettingFloat SmoothingCurve = FBasicJSONSettingFloat(1, true , TEXT("smoothing_curve"));
 	
 	/**
 	 * A unique identifier representing your end-user.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString User = "User";
+	FBasicJSONSettingString User = FBasicJSONSettingString("User", false, TEXT("user"));
 	
 	/**
 	* (https://platform.openai.com/docs/api-reference/completions/create)
@@ -568,19 +568,19 @@ struct FBasicGenerationSettings
 	* As an example, you can pass {"50256": -100} to prevent the <|endoftext|> token from being generated.
 	*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString LogitBias;
+	FBasicJSONSettingString LogitBias = FBasicJSONSettingString(TEXT(""), false, TEXT("logit_bias"));
 
 	/**
 	 * How many completions to generate for each prompt.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 N = 1;
+	FBasicJSONSettingInteger N = FBasicJSONSettingInteger(1, true, TEXT("n"));
 
 	/**
 	 * Unfortunately, no idea.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 PromptLookupNumTokens = 0;
+	FBasicJSONSettingInteger PromptLookupNumTokens = FBasicJSONSettingInteger(0, true, TEXT("prompt_lookup_num_tokens"));
 
 	
 	/**
@@ -606,14 +606,14 @@ struct FCompletionGenerationSettings
 	* When used with n, best_of controls the number of candidate completions and n specifies how many to return – best_of must be greater than n.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 BestOf = 0;
+	FBasicJSONSettingInteger BestOf = FBasicJSONSettingInteger(0, false, TEXT("best_of"));
 
 	/**
 	 * (https://platform.openai.com/docs/api-reference/completions)
 	 * Echo back the prompt in addition to the completion.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool Echo = false;
+	FBasicJSONSettingBool Echo = FBasicJSONSettingBool(false, false, TEXT("echo"));
 
 	/**
 	* (https://platform.openai.com/docs/api-reference/completions)
@@ -623,7 +623,7 @@ struct FCompletionGenerationSettings
 	* The maximum value for logprobs is 5.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	int32 LogProbs = 0;
+	FBasicJSONSettingInteger LogProbs = FBasicJSONSettingInteger(0, false, TEXT("logprobs"));
 
 	/**
 	* (https://platform.openai.com/docs/api-reference/completions)
@@ -632,14 +632,14 @@ struct FCompletionGenerationSettings
 	* so if a prompt is not specified the model will generate as if from the beginning of a new document.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString prompt;
+	FBasicJSONSettingString prompt = FBasicJSONSettingString(TEXT(""), true, TEXT("prompt"));
 
 	/**
 	 * The suffix that comes after a completion of inserted text.
 	 * This parameter is only supported for gpt-3.5-turbo-instruct.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Suffix;
+	FBasicJSONSettingString Suffix = FBasicJSONSettingString(TEXT(""), false, TEXT("suffix"));
 	
 };
 
@@ -656,37 +656,37 @@ struct FChatCompletionGenerationSettings
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Character;
+	FBasicJSONSettingString Character = FBasicJSONSettingString(TEXT(""), false, TEXT("character"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString ChatInstructCommand;
+	FBasicJSONSettingString ChatInstructCommand = FBasicJSONSettingString(TEXT(""), false, TEXT("chat_instruct_command"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString ChatTemplateStr;
+	FBasicJSONSettingString ChatTemplateStr = FBasicJSONSettingString(TEXT(""), false, TEXT("chat_template_str"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Context;
+	FBasicJSONSettingString Context = FBasicJSONSettingString(TEXT(""), false, TEXT("context"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	bool Continue_;
+	FBasicJSONSettingBool Continue_ = FBasicJSONSettingBool(false, true, TEXT("continue_"));
 	
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString FunctionCall;
+	FBasicJSONSettingString FunctionCall = FBasicJSONSettingString(TEXT(""), false, TEXT("function_call"));
 
 	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
 	//TArray<FString> Functions;
@@ -695,19 +695,19 @@ struct FChatCompletionGenerationSettings
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Greeting;
+	FBasicJSONSettingString Greeting = FBasicJSONSettingString(TEXT(""), false, TEXT("greeting"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString InstructionTemplate;
+	FBasicJSONSettingString InstructionTemplate = FBasicJSONSettingString(TEXT(""), false, TEXT("instruction_template"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString InstructionTemplateStr;
+	FBasicJSONSettingString InstructionTemplateStr = FBasicJSONSettingString(TEXT(""), false, TEXT("instruction_template_str"));
 
 	/**
 	 * 
@@ -719,24 +719,24 @@ struct FChatCompletionGenerationSettings
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Mode;
+	FBasicJSONSettingString Mode = FBasicJSONSettingString(TEXT(""), true, TEXT("mode"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Name1;
+	FBasicJSONSettingString Name1 = FBasicJSONSettingString(TEXT(""), false, TEXT("name1"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString Name2;
+	FBasicJSONSettingString Name2 = FBasicJSONSettingString(TEXT(""), false, TEXT("name2"));
 
 	/**
 	 * 
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "OpenAI")
-	FString UserBio;
+	FBasicJSONSettingString UserBio = FBasicJSONSettingString(TEXT(""), false, TEXT("user_bio"));
 	
 };
