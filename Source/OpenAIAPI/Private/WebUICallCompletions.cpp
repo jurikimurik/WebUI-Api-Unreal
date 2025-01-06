@@ -38,9 +38,12 @@ TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload()
 
 void UWebUICallCompletions::CommitRequest(FString Verb, TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest, FString _payload)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
+	
 	// commit request
 	HttpRequest->SetVerb(Verb);
 	HttpRequest->SetContentAsString(_payload);
+	
 
 	if (HttpRequest->ProcessRequest())
 	{
