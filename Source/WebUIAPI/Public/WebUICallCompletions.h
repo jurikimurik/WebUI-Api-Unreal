@@ -20,7 +20,7 @@ class WEBUIAPI_API UWebUICallCompletions : public UBlueprintAsyncActionBase
 
 public:
 	UWebUICallCompletions();
-	~UWebUICallCompletions();
+	virtual ~UWebUICallCompletions() override;
 
 	// Special setting that is being used for simple generation
 	FCompletionGenerationSettings ChatSettings;
@@ -28,12 +28,12 @@ public:
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";
 
-	UPROPERTY(BlueprintAssignable, Category="OpenAI")
+	UPROPERTY(BlueprintAssignable, Category="WebUI")
 	FOnWebUiResponseRecievedPin Finished;
 
 private:
 	
-	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
 	static UWebUICallCompletions* OpenWebUICallCompletions(FCompletionGenerationSettings chatSettings, FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload();

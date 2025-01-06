@@ -37,15 +37,15 @@ FCompletion WebUIParser::ParseWebIUResponse(const FJsonObject& json)
 	TArray<TSharedPtr<FJsonValue>> choices = json.GetArrayField(FString("choices"));
 	if (choices.IsEmpty())
 	{
-		res.text = TEXT("WebUI RESPONSE CHOICES ARE EMPTY");
-		res.index = -1;
+		res.Text = TEXT("WebUI RESPONSE CHOICES ARE EMPTY");
+		res.Index = -1;
 		return res;
 	}
 	
 	TSharedPtr<FJsonValue> choice = choices[0];
-	res.text = choice->AsObject()->GetStringField(TEXT("text"));
-	res.index = choice->AsObject()->GetIntegerField(TEXT("index"));
-	json.TryGetStringField(TEXT("finish_reason"), res.finishReason);
+	res.Text = choice->AsObject()->GetStringField(TEXT("text"));
+	res.Index = choice->AsObject()->GetIntegerField(TEXT("index"));
+	json.TryGetStringField(TEXT("finish_reason"), res.FinishReason);
 	
 	return res;
 }
@@ -62,8 +62,8 @@ TArray<FChatCompletionWebUI> WebUIParser::ParseChatWebUIResponse(const FJsonObje
 	{
 		UE_LOG(LogTemp, Warning, TEXT("WebUI: Choices are empty!"))
 		ChatCompletion response;
-		response.finishReason = TEXT("WebUI RESPONSE CHOICES ARE EMPTY");
-		response.index = -1;
+		response.FinishReason = TEXT("WebUI RESPONSE CHOICES ARE EMPTY");
+		response.Index = -1;
 		res.Add(response);
 		return res;
 	}
@@ -71,14 +71,14 @@ TArray<FChatCompletionWebUI> WebUIParser::ParseChatWebUIResponse(const FJsonObje
 	for (TSharedPtr<FJsonValue> choice : choices)
 	{
 		ChatCompletion response;
-		response.index = choice->AsObject()->GetIntegerField(TEXT("index"));
-		response.finishReason = choice->AsObject()->GetStringField(TEXT("finish_reason"));
+		response.Index = choice->AsObject()->GetIntegerField(TEXT("index"));
+		response.FinishReason = choice->AsObject()->GetStringField(TEXT("finish_reason"));
 		auto messageObject = choice->AsObject()->GetField(TEXT("message"), EJson::Object);
 		
 		FChatMessage message;
-		message.role = messageObject->AsObject()->GetStringField(TEXT("role"));
-		message.content = messageObject->AsObject()->GetStringField(TEXT("content"));
-		response.messages.Add(message);
+		message.Role = messageObject->AsObject()->GetStringField(TEXT("role"));
+		message.Content = messageObject->AsObject()->GetStringField(TEXT("content"));
+		response.Messages.Add(message);
 
 		res.Add(response);
 	}
