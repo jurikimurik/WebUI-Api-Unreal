@@ -99,3 +99,14 @@ FString WebUIParser::ParseGeneratedImage(const FJsonObject& json)
 
 	return res;
 }
+
+TArray<FString> WebUIParser::ParseModelList(const FJsonObject& json)
+{
+	TArray<FString> models;
+	auto jsonModels = json.GetArrayField(TEXT("model_names"));
+	for (auto jsonModelJson : jsonModels)
+	{
+		models.Add(jsonModelJson->AsString());
+	}
+	return models;
+}

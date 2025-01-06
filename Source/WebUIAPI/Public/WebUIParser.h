@@ -34,4 +34,6 @@ public:
 
 	static FString ParseTranscriptionCompletion(const FJsonObject&);
 	static FString ParseGeneratedImage(const FJsonObject&);
+
+	static TArray<FString> ParseModelList(const FJsonObject&);
 };
