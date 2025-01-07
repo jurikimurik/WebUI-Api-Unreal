@@ -759,10 +759,36 @@ struct FChatCompletionGenerationSettings
 // MODELS -------------------------------------------------------------------------------------------------------------------------------------------
 
 USTRUCT(BlueprintType)
+struct FModelSettings
+{
+	GENERATED_USTRUCT_BODY()
+};
+
+USTRUCT(BlueprintType)
+struct FBasicModelSettings
+{
+	GENERATED_USTRUCT_BODY()
+
+	// Name of the model to load.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
+	FBasicJSONSettingString ModelName = FBasicJSONSettingString(TEXT(""), true, TEXT("model_name"));
+
+	// TODO: Can also contain "Settings" in JSON POST request.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
+	FModelSettings Settings;
+};
+
+USTRUCT(BlueprintType)
 struct FTransformerSettings
 {
 	GENERATED_USTRUCT_BODY()
 
+	/**
+	 * Basic settings for model.
+	 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
+	FBasicModelSettings Basics;
+	
 	//I don't know why, but CpuMemory needs to be string in JSON POST request to work with Oobagooba's WebUI.
 
 	
@@ -779,7 +805,7 @@ struct FTransformerSettings
 	 * you may need to set this parameter to 9 GiB or 8 GiB. It can be used in conjunction with "load_in_8bit" but not with "load-in-4bit" as far as I'm aware.
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
-	FBasicJSONSettingInteger GpuMemory = FBasicJSONSettingInteger(1000, true , TEXT("gpu_memory"));
+	FBasicJSONSettingInteger GpuMemory0 = FBasicJSONSettingInteger(1000, true , TEXT("gpu_memory_0"));
 
 	//TODO: Implement compute_dtype and quant_type to inclide into JSON POST request, because they are types for now.
 
