@@ -25,6 +25,8 @@ public:
 	static void IncludeCompletionGenerationSettings(TSharedPtr<FJsonObject> Shared, const FCompletionGenerationSettings& CompletionSettings);
 	static void IncludeChatGenerationSettings(TSharedPtr<FJsonObject> Shared, const FChatCompletionGenerationSettings& ChatSettings);
 
+	static void IncludeCustomJSONParameters(TSharedPtr<FJsonObject> Shared, const TArray<FCustomJSONParameter>& CustomJSONParameters);
+
 	static void IncludeBasicModelSettings(TSharedPtr<FJsonObject> Shared, const FBasicModelSettings& BasicModelSettings);
 	static void IncludeTransformerModelSettings(TSharedPtr<FJsonObject> Shared, const FTransformerSettings& ModelSettings);
 };

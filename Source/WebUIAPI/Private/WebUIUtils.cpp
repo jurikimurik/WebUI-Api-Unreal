@@ -46,6 +46,45 @@ namespace JSONUtils
 }
 
 
+void UWebUIUtils::IncludeCustomJSONParameters(TSharedPtr<FJsonObject> Shared, const TArray<FCustomJSONParameter>& Parameters)
+{
+	//Custom JSON Parameters
+	for (const FCustomJSONParameter& param : Parameters)
+	{
+		//Write to JSON will depend on type of the parameter.
+		switch (param.Type)
+		{
+		case JSONTypeParameter::Number:
+			
+			if (param.JsonValue.IsNumeric())
+			{
+				Shared->SetNumberField(param.JsonName, FCString::Atof(*param.JsonValue));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
+			}
+			break;
+			
+		case JSONTypeParameter::Integer:
+			
+			if (param.JsonValue.IsNumeric())
+			{
+				Shared->SetNumberField(param.JsonName, FCString::Atoi(*param.JsonValue));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
+			}
+			break;
+			
+		case JSONTypeParameter::String:
+			Shared->SetStringField(param.JsonName, param.JsonValue);
+			break;
+		}
+	}
+}
+
 void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared, const FBasicGenerationSettings& Basics)
 {
 	using namespace JSONUtils;
@@ -114,41 +153,7 @@ void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared,
 		CheckAndSet(Shared, Basics.User);
 		
 
-	//Custom JSON Parameters
-	for (const FCustomJSONParameter& param : Basics.CustomJSONParameters)
-	{
-		//Write to JSON will depend on type of the parameter.
-		switch (param.Type)
-		{
-		case JSONTypeParameter::Number:
-			
-			if (param.JsonValue.IsNumeric())
-			{
-				Shared->SetNumberField(param.JsonName, FCString::Atof(*param.JsonValue));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
-			}
-			break;
-			
-		case JSONTypeParameter::Integer:
-			
-			if (param.JsonValue.IsNumeric())
-			{
-				Shared->SetNumberField(param.JsonName, FCString::Atoi(*param.JsonValue));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
-			}
-			break;
-			
-		case JSONTypeParameter::String:
-			Shared->SetStringField(param.JsonName, param.JsonValue);
-			break;
-		}
-	}
+	IncludeCustomJSONParameters(Shared, Basics.CustomJSONParameters);
 
 	//Objects + Optional
 	// TODO: LogitBias
@@ -220,7 +225,7 @@ void UWebUIUtils::IncludeChatGenerationSettings(TSharedPtr<FJsonObject> Shared,
 }
 
 void UWebUIUtils::IncludeBasicModelSettings(TSharedPtr<FJsonObject> Shared,
-	const FBasicModelSettings& BasicModelSettings)
+                                            const FBasicModelSettings& BasicModelSettings)
 {
 	using namespace JSONUtils;
 	
