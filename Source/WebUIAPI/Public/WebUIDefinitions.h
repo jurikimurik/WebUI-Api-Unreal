@@ -776,6 +776,10 @@ struct FBasicModelSettings
 	// TODO: Can also contain "Settings" in JSON POST request.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
 	FModelSettings Settings;
+
+	// Additional JSON parameters that should be included.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
+	TArray<FCustomJSONParameter> CustomJSONParameters;
 };
 
 USTRUCT(BlueprintType)
@@ -930,4 +934,11 @@ struct FTransformerSettings
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
 	FBasicJSONSettingBool DisableExllamav2 = FBasicJSONSettingBool(false, true, TEXT("disable_exllamav2"));
+
+	
+	/**
+	 * Additional JSON parameters that should be included in "args" field.
+	 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
+	TArray<FCustomJSONParameter> ArgsCustomParameters;
 };

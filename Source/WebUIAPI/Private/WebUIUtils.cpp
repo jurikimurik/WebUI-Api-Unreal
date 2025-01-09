@@ -272,6 +272,12 @@ void UWebUIUtils::IncludeTransformerModelSettings(TSharedPtr<FJsonObject> Shared
 	CheckAndSet(argsObject, ModelSettings.DisableExllama);
 	CheckAndSet(argsObject, ModelSettings.DisableExllamav2);
 
+	//Additional JSON parameters to put in "args" field
+	IncludeCustomJSONParameters(argsObject, ModelSettings.ArgsCustomParameters);
+
 	TSharedPtr<FJsonValueObject> argsValueObject = MakeShareable(new FJsonValueObject(argsObject)); 
 	Shared->SetField(TEXT("args"), argsValueObject);
+	
+	//Other additional JSON parameters
+	IncludeCustomJSONParameters(Shared, ModelSettings.Basics.CustomJSONParameters);
 }
