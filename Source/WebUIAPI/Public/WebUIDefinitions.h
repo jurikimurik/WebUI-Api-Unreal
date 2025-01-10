@@ -3,6 +3,9 @@
 #include "CoreMinimal.h"
 #include "WebUIDefinitions.generated.h"
 
+// COMPLETION ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Basic completion
 USTRUCT(BlueprintType)
 struct FCompletion
 {
@@ -54,8 +57,9 @@ struct FCompletionWebUiSettings
 	float Seed = 0;
 };
 
+// CHAT ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+// One separate message
 USTRUCT(BlueprintType)
 struct FChatMessage
 {
@@ -70,6 +74,7 @@ struct FChatMessage
 	FString Content;
 };
 
+// Structure that have a few of FChatMessage inside of it
 USTRUCT(BlueprintType)
 struct FChatCompletionWebUI
 {
