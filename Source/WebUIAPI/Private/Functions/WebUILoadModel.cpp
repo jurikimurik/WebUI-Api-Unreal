@@ -1,4 +1,4 @@
-﻿#include "WebUIUnloadModel.h"
+﻿#include "Functions/WebUILoadModel.h"
 
 #include "WebUIParser.h"
 #include "Http.h"
@@ -7,30 +7,33 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
-UIWebUIUnloadModel::UIWebUIUnloadModel()
+UWebUILoadModel::UWebUILoadModel()
 {
 }
 
-UIWebUIUnloadModel::~UIWebUIUnloadModel()
+UWebUILoadModel::~UWebUILoadModel()
 {
 }
 
-UIWebUIUnloadModel* UIWebUIUnloadModel::UnloadWebUIModel(FString Address)
+UWebUILoadModel* UWebUILoadModel::LoadWebUIModel(FTransformerSettings modelSettings, FString Address)
 {
-	UIWebUIUnloadModel* BPNode = NewObject<UIWebUIUnloadModel>();
+	UWebUILoadModel* BPNode = NewObject<UWebUILoadModel>();
+	BPNode->ModelSettings = modelSettings;
 	BPNode->Address = Address;
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UIWebUIUnloadModel::BuildPayload() const
+TSharedPtr<FJsonObject> UWebUILoadModel::BuildPayload() const
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
+	UWebUIUtils::IncludeTransformerModelSettings(_payloadObject, ModelSettings);
+
 	return _payloadObject;
 }
 
-void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
+void UWebUILoadModel::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
 	
@@ -41,7 +44,7 @@ void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHt
 
 	if (HttpRequest->ProcessRequest())
 	{
-		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UIWebUIUnloadModel::OnResponse);
+		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUILoadModel::OnResponse);
 	}
 	else
 	{
@@ -49,7 +52,7 @@ void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHt
 	}
 }
 
-bool UIWebUIUnloadModel::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
+bool UWebUILoadModel::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -69,7 +72,7 @@ bool UIWebUIUnloadModel::CheckResponse(const FHttpResponsePtr& Response, const b
 	return true;
 }
 
-void UIWebUIUnloadModel::Activate()
+void UWebUILoadModel::Activate()
 {
 	// NOTE: ApiKey was deleted because it was not really necessary to have it to connect to Oobabooga's WebUI. 
 
@@ -77,7 +80,7 @@ void UIWebUIUnloadModel::Activate()
 	auto HttpRequest = FHttpModule::Get().CreateRequest();
 	
 	// set headers
-	FString url = FString::Printf(TEXT("%s/v1/internal/model/unload"), *Address);
+	FString url = FString::Printf(TEXT("%s/v1/internal/model/load"), *Address);
 	HttpRequest->SetURL(url);
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 
@@ -92,7 +95,7 @@ void UIWebUIUnloadModel::Activate()
 	CommitRequest("POST", HttpRequest,_payload);
 }
 
-void UIWebUIUnloadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
+void UWebUILoadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 

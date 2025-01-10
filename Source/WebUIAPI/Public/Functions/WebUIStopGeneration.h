@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "WebUIDefinitions.h"
+#include "./WebUIDefinitions.h"
 #include "HttpModule.h"
 
 #include "WebUIStopGeneration.generated.h"

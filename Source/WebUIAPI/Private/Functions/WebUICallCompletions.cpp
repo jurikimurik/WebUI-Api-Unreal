@@ -1,4 +1,7 @@
-﻿#include "WebUIStopGeneration.h"
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Functions/WebUICallCompletions.h"
 #include "WebUIParser.h"
 #include "Http.h"
 #include "WebUIUtils.h"
@@ -6,30 +9,33 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
-UWebUIStopGeneration::UWebUIStopGeneration()
+UWebUICallCompletions::UWebUICallCompletions()
 {
 }
 
-UWebUIStopGeneration::~UWebUIStopGeneration()
+UWebUICallCompletions::~UWebUICallCompletions()
 {
 }
 
-UWebUIStopGeneration* UWebUIStopGeneration::StopWebUIGeneration(FString Address)
+UWebUICallCompletions* UWebUICallCompletions::OpenWebUICallCompletions(FCompletionGenerationSettings ChatSettingsInput, FString Address)
 {
-	UWebUIStopGeneration* BPNode = NewObject<UWebUIStopGeneration>();
+	UWebUICallCompletions* BPNode = NewObject<UWebUICallCompletions>();
+	BPNode->ChatSettings = ChatSettingsInput;
 	BPNode->Address = Address;
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UWebUIStopGeneration::BuildPayload() const
+TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload() const
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
+	UWebUIUtils::IncludeCompletionGenerationSettings(_payloadObject, ChatSettings);
+
 	return _payloadObject;
 }
 
-void UWebUIStopGeneration::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
+void UWebUICallCompletions::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
 	
@@ -40,7 +46,7 @@ void UWebUIStopGeneration::CommitRequest(const FString& Verb, const TSharedRef<I
 
 	if (HttpRequest->ProcessRequest())
 	{
-		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUIStopGeneration::OnResponse);
+		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUICallCompletions::OnResponse);
 	}
 	else
 	{
@@ -48,7 +54,7 @@ void UWebUIStopGeneration::CommitRequest(const FString& Verb, const TSharedRef<I
 	}
 }
 
-bool UWebUIStopGeneration::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
+bool UWebUICallCompletions::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -68,7 +74,7 @@ bool UWebUIStopGeneration::CheckResponse(const FHttpResponsePtr& Response, const
 	return true;
 }
 
-void UWebUIStopGeneration::Activate()
+void UWebUICallCompletions::Activate()
 {
 	// NOTE: ApiKey was deleted because it was not really necessary to have it to connect to Oobabooga's WebUI. 
 
@@ -76,7 +82,7 @@ void UWebUIStopGeneration::Activate()
 	auto HttpRequest = FHttpModule::Get().CreateRequest();
 	
 	// set headers
-	FString url = FString::Printf(TEXT("%s/v1/internal/stop-generation"), *Address);
+	FString url = FString::Printf(TEXT("%s/v1/completions"), *Address);
 	HttpRequest->SetURL(url);
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 
@@ -91,7 +97,7 @@ void UWebUIStopGeneration::Activate()
 	CommitRequest("POST", HttpRequest,_payload);
 }
 
-void UWebUIStopGeneration::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
+void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 
@@ -111,9 +117,9 @@ void UWebUIStopGeneration::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr 
 		
 		WebUIParser parser(ChatSettings);
 		//Special method in Parses was created
-		FString _out = (Response->GetContentAsString());
+		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
 
-		if (_out.IsEmpty())
+		if (_out.Text.IsEmpty())
 		{
 			Finished.Broadcast(false, TEXT("Response text is empty."), _out);
 		} else

@@ -1,33 +1,30 @@
 ﻿#pragma once
 
-#include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "WebUIDefinitions.h"
+#include "./WebUIDefinitions.h"
 #include "HttpModule.h"
 
-#include "WebUIUnloadModel.generated.h"
+#include "WebUIGetModels.generated.h"
 
 
 
 UCLASS()
-class WEBUIAPI_API UIWebUIUnloadModel : public UBlueprintAsyncActionBase
+class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
-public:
-	UIWebUIUnloadModel();
-	virtual ~UIWebUIUnloadModel() override;
-	
+	UWebUIGetModels();
+	virtual ~UWebUIGetModels();
+
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
-	FOnWebUiSimpleResponsePin Finished;
-
-private:
+	FOnWebUiArraySimpleResponsePin Finished;
 	
+public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
-	static UIWebUIUnloadModel* UnloadWebUIModel(FString Address);
+	static UWebUIGetModels* GetWebUIModels(FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload() const;
 	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);
