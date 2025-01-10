@@ -46,6 +46,45 @@ namespace JSONUtils
 }
 
 
+void UWebUIUtils::IncludeCustomJSONParameters(TSharedPtr<FJsonObject> Shared, const TArray<FCustomJSONParameter>& Parameters)
+{
+	//Custom JSON Parameters
+	for (const FCustomJSONParameter& param : Parameters)
+	{
+		//Write to JSON will depend on type of the parameter.
+		switch (param.Type)
+		{
+		case JSONTypeParameter::Number:
+			
+			if (param.JsonValue.IsNumeric())
+			{
+				Shared->SetNumberField(param.JsonName, FCString::Atof(*param.JsonValue));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
+			}
+			break;
+			
+		case JSONTypeParameter::Integer:
+			
+			if (param.JsonValue.IsNumeric())
+			{
+				Shared->SetNumberField(param.JsonName, FCString::Atoi(*param.JsonValue));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
+			}
+			break;
+			
+		case JSONTypeParameter::String:
+			Shared->SetStringField(param.JsonName, param.JsonValue);
+			break;
+		}
+	}
+}
+
 void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared, const FBasicGenerationSettings& Basics)
 {
 	using namespace JSONUtils;
@@ -114,41 +153,7 @@ void UWebUIUtils::IncludeBasicGenerationSettings(TSharedPtr<FJsonObject> Shared,
 		CheckAndSet(Shared, Basics.User);
 		
 
-	//Custom JSON Parameters
-	for (const FCustomJSONParameter& param : Basics.CustomJSONParameters)
-	{
-		//Write to JSON will depend on type of the parameter.
-		switch (param.Type)
-		{
-		case JSONTypeParameter::Number:
-			
-			if (param.JsonValue.IsNumeric())
-			{
-				Shared->SetNumberField(param.JsonName, FCString::Atof(*param.JsonValue));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
-			}
-			break;
-			
-		case JSONTypeParameter::Integer:
-			
-			if (param.JsonValue.IsNumeric())
-			{
-				Shared->SetNumberField(param.JsonName, FCString::Atoi(*param.JsonValue));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Trying to pass not-numeric value as numeric in JSON request: %s"), *param.JsonValue);
-			}
-			break;
-			
-		case JSONTypeParameter::String:
-			Shared->SetStringField(param.JsonName, param.JsonValue);
-			break;
-		}
-	}
+	IncludeCustomJSONParameters(Shared, Basics.CustomJSONParameters);
 
 	//Objects + Optional
 	// TODO: LogitBias
@@ -217,4 +222,62 @@ void UWebUIUtils::IncludeChatGenerationSettings(TSharedPtr<FJsonObject> Shared,
 	CheckAndSet(Shared, ChatSettings.Name2);
 	CheckAndSet(Shared, ChatSettings.UserBio);
 	
+}
+
+void UWebUIUtils::IncludeBasicModelSettings(TSharedPtr<FJsonObject> Shared,
+                                            const FBasicModelSettings& BasicModelSettings)
+{
+	using namespace JSONUtils;
+	
+	//The name of the model
+	CheckAndSet(Shared, BasicModelSettings.ModelName);
+	//TODO: Include "Settings" also
+}
+
+void UWebUIUtils::IncludeTransformerModelSettings(TSharedPtr<FJsonObject> Shared,
+                                                  const FTransformerSettings& ModelSettings)
+{
+	using namespace JSONUtils;
+
+	UWebUIUtils::IncludeBasicModelSettings(Shared, ModelSettings.Basics);
+
+	//Array<Object>
+	TSharedPtr<FJsonObject> argsObject = MakeShareable(new FJsonObject());
+		
+	//Types
+	CheckAndSet(argsObject, ModelSettings.ComputeDType);
+	CheckAndSet(argsObject, ModelSettings.QuantType);
+		
+	//Strings
+	CheckAndSet(argsObject, ModelSettings.CpuMemory);
+		
+	//Numbers
+	CheckAndSet(argsObject, ModelSettings.AlphaValue);
+		
+	//Integers
+	CheckAndSet(argsObject, ModelSettings.GpuMemory0);
+	CheckAndSet(argsObject, ModelSettings.RopeFreqBase);
+	CheckAndSet(argsObject, ModelSettings.CompressPosEmb);
+		
+	//Bools
+	CheckAndSet(argsObject, ModelSettings.Cpu);
+	CheckAndSet(argsObject, ModelSettings.LoadIn8bit);
+	CheckAndSet(argsObject, ModelSettings.Bf16);
+	CheckAndSet(argsObject, ModelSettings.AutoDevices);
+	CheckAndSet(argsObject, ModelSettings.Disk);
+	CheckAndSet(argsObject, ModelSettings.LoadIn4bit);
+	CheckAndSet(argsObject, ModelSettings.TrustRemoteCode);
+	CheckAndSet(argsObject, ModelSettings.NoUseFast);
+	CheckAndSet(argsObject, ModelSettings.UseFlashAttention2);
+	CheckAndSet(argsObject, ModelSettings.DisableExllama);
+	CheckAndSet(argsObject, ModelSettings.DisableExllamav2);
+
+	//Additional JSON parameters to put in "args" field
+	IncludeCustomJSONParameters(argsObject, ModelSettings.ArgsCustomParameters);
+
+	TSharedPtr<FJsonValueObject> argsValueObject = MakeShareable(new FJsonValueObject(argsObject)); 
+	Shared->SetField(TEXT("args"), argsValueObject);
+	
+	//Other additional JSON parameters
+	IncludeCustomJSONParameters(Shared, ModelSettings.Basics.CustomJSONParameters);
 }
