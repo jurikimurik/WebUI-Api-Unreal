@@ -109,7 +109,8 @@ void UWebUIGetModels::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Respo
 
 		
 		//Special method in Parses was created
-		TArray<FString> _out = WebUIParser::ParseModelList(*responseObject);
+		WebUIParser parser(*responseObject);
+		TArray<FString> _out = parser.ParseWebUIModelList();
 
 		if (_out.IsEmpty())
 		{

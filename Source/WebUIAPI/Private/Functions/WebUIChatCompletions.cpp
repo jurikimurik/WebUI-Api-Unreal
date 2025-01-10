@@ -114,9 +114,9 @@ void UWebUIChatCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		}
 
 		
-		WebUIParser parser(ChatSettings);
+		WebUIParser parser(*responseObject);
 			//Special method in Parses was created
-		TArray<FChatCompletionWebUI> _out = parser.ParseChatWebUIResponse(*responseObject);
+		TArray<FChatCompletionWebUI> _out = parser.ParseWebUIChatCompletionResponse();
 
 		if (_out.IsEmpty())
 		{

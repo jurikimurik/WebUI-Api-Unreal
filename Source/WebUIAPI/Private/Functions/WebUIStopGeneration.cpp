@@ -107,9 +107,7 @@ void UWebUIStopGeneration::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr 
 			Finished.Broadcast(false, TEXT("Api error"), {});
 			return;
 		}
-
 		
-		WebUIParser parser(ChatSettings);
 		//Special method in Parses was created
 		FString _out = (Response->GetContentAsString());
 

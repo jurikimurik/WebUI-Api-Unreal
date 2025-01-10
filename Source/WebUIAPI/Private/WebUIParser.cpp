@@ -1,37 +1,45 @@
 ﻿#include "WebUIParser.h"
 #include "Dom/JsonObject.h"
 
-
-// Constructor
-WebUIParser::WebUIParser(const FCompletionWebUiSettings& settings)
-: webUiSettings(settings)
+FJsonObject WebUIParser::GetJsonObject() const
 {
+	return JsonObject;
 }
 
-WebUIParser::WebUIParser(const FChatCompletionWebUiSettings& settings)
-	: chatWebUiSettings(settings)
+void WebUIParser::SetJsonObject(const FJsonObject& JSONObject)
 {
+	this->JsonObject = JSONObject;
 }
 
-WebUIParser::WebUIParser(const FCompletionGenerationSettings& settings)
-	: CompletionGenerationSettings(settings)
+
+FJsonObject WebUIParser::CheckAndGet(const FJsonObject& jsonToCheck) const
 {
+	//If JSON is empty
+	if (jsonToCheck.Values.IsEmpty())
+		//Use JSON that is inside of this class instead
+		return GetJsonObject();
+	else
+		//Use this exactly this JSON
+		return jsonToCheck;
 }
 
-WebUIParser::WebUIParser(const FChatCompletionGenerationSettings& settings)
-	: ChatCompletionGenerationSettings(settings)
+FJsonObject WebUIParser::CheckSetAndGet(const FJsonObject& JSONToCheck)
 {
+	//If JSON is empty
+	if (JSONToCheck.Values.IsEmpty())
+		//Use JSON that is inside of this class instead
+			return GetJsonObject();
+	else
+		//Update
+			SetJsonObject(JSONToCheck);
+		//Use this exactly this JSON
+			return GetJsonObject();
 }
 
-//De-constructor
-WebUIParser::~WebUIParser()
+FCompletion WebUIParser::ParseWebUICompletionResponse(const FJsonObject& JSONToParse)
 {
-}
+	FJsonObject json = CheckSetAndGet(JSONToParse);
 
-// parses a single Completion.
-
-FCompletion WebUIParser::ParseWebIUResponse(const FJsonObject& json)
-{
 	FCompletion res = {};
 
 	TArray<TSharedPtr<FJsonValue>> choices = json.GetArrayField(FString("choices"));
@@ -50,10 +58,12 @@ FCompletion WebUIParser::ParseWebIUResponse(const FJsonObject& json)
 	return res;
 }
 
-TArray<FChatCompletionWebUI> WebUIParser::ParseChatWebUIResponse(const FJsonObject& json)
+TArray<FChatCompletionWebUI> WebUIParser::ParseWebUIChatCompletionResponse(const FJsonObject& jsonToParse)
 {
 	//Should be similar to type in TArray
 	typedef FChatCompletionWebUI ChatCompletion;
+
+	FJsonObject json = CheckSetAndGet(jsonToParse);
 	
 	TArray<ChatCompletion> res = {};
 
@@ -86,24 +96,23 @@ TArray<FChatCompletionWebUI> WebUIParser::ParseChatWebUIResponse(const FJsonObje
 	return res;
 }
 
-FString WebUIParser::ParseTranscriptionCompletion(const FJsonObject& json)
+FString WebUIParser::ParseTranscriptionCompletion(const FJsonObject& jsonToParse)
 {
-	return json.GetStringField(FString("text"));
+	return CheckSetAndGet(jsonToParse).GetStringField(FString("text"));
 }
 
-// parses a single Generated Image.
-FString WebUIParser::ParseGeneratedImage(const FJsonObject& json)
+FString WebUIParser::ParseGeneratedImage(const FJsonObject& jsonToParse) 
 {
 	FString res = "";
-	res = json.GetStringField(TEXT("url"));
+	res = CheckSetAndGet(jsonToParse).GetStringField(TEXT("url"));
 
 	return res;
 }
 
-TArray<FString> WebUIParser::ParseModelList(const FJsonObject& json)
+TArray<FString> WebUIParser::ParseWebUIModelList(const FJsonObject& jsonToParse)
 {
 	TArray<FString> models;
-	auto jsonModels = json.GetArrayField(TEXT("model_names"));
+	auto jsonModels = CheckSetAndGet(jsonToParse).GetArrayField(TEXT("model_names"));
 	for (auto jsonModelJson : jsonModels)
 	{
 		models.Add(jsonModelJson->AsString());

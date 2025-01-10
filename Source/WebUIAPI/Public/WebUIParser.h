@@ -12,28 +12,41 @@
  */
 class WEBUIAPI_API WebUIParser
 {
+protected:
+	//Internal, temporal JSON object
+	FJsonObject JsonObject;
+
+	
 public:
 	WebUIParser() = default;
-	WebUIParser(const FCompletionWebUiSettings&);
-	WebUIParser(const FChatCompletionWebUiSettings&);
+	WebUIParser(const FJsonObject& Json) : JsonObject(Json) {}
+	virtual ~WebUIParser() = default;
 
-	WebUIParser(const FCompletionGenerationSettings&);
-	WebUIParser(const FChatCompletionGenerationSettings&);
+	//Getters and setters --------------------------------------------------------------------------------
+	FJsonObject GetJsonObject() const;
+	void SetJsonObject(const FJsonObject& JSONObject);
+
+	//Check, update JSON and return updated JSON
+	FJsonObject CheckSetAndGet(const FJsonObject& JSONToCheck);
+
+	//Only check and return JSONToParse or iternal JSON
+	FJsonObject CheckAndGet(const FJsonObject& JSONToParse) const;
+
+	// Web UI Parsing Methods ---------------------------------------------------------------------------
+
+	//Parsing JSON to Completion
+	FCompletion ParseWebUICompletionResponse(const FJsonObject& JSONToParse = FJsonObject());
+
+	//Parsing JSON to ChatCompletion
+	TArray<FChatCompletionWebUI> ParseWebUIChatCompletionResponse(const FJsonObject& = FJsonObject());
+
+	//Parsing JSON to Model List
+	TArray<FString> ParseWebUIModelList(const FJsonObject& = FJsonObject());
+
+	// Open AI Parsing Methods --------------------------------------------------------------------------
 	
-	~WebUIParser();
-
-
-	FCompletionWebUiSettings webUiSettings;
-	FChatCompletionWebUiSettings chatWebUiSettings;
-
-	FCompletionGenerationSettings CompletionGenerationSettings;
-	FChatCompletionGenerationSettings ChatCompletionGenerationSettings;
-
-	static FCompletion ParseWebIUResponse(const FJsonObject&);
-	static TArray<FChatCompletionWebUI> ParseChatWebUIResponse(const FJsonObject&);
-
-	static FString ParseTranscriptionCompletion(const FJsonObject&);
-	static FString ParseGeneratedImage(const FJsonObject&);
-
-	static TArray<FString> ParseModelList(const FJsonObject&);
+	FString ParseTranscriptionCompletion(const FJsonObject& = FJsonObject());
+	
+	FString ParseGeneratedImage(const FJsonObject& = FJsonObject());
+	
 };
