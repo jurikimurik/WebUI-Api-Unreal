@@ -7,7 +7,7 @@
 
 #include "WebUIUnloadModel.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiUnloadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);
+
 
 UCLASS()
 class WEBUIAPI_API UIWebUIUnloadModel : public UBlueprintAsyncActionBase

@@ -7,7 +7,7 @@
 
 #include "WebUILoadModel.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiLoadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);
+
 
 UCLASS()
 class WEBUIAPI_API UWebUILoadModel : public UBlueprintAsyncActionBase

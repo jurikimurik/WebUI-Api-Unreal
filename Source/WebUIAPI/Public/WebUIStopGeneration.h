@@ -6,7 +6,7 @@
 
 #include "WebUIStopGeneration.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiStopResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+
 
 // Function sends HTTP packet to WebUI on address to stop generation.
 UCLASS()

@@ -8,7 +8,7 @@
 #include "HttpModule.h"
 #include "WebUIChatCompletions.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FChatCompletionWebUI>&, messages);
+
 
 /**
  * 

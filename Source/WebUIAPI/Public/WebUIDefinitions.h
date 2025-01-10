@@ -947,3 +947,23 @@ struct FTransformerSettings
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WebUI")
 	TArray<FCustomJSONParameter> ArgsCustomParameters;
 };
+
+// DELEGATES -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// From Call Completions 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+
+// From Chat Completions
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FChatCompletionWebUI>&, messages);
+
+// From Get Models
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiGetModelsResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FString>&, message);
+
+// From Load Model
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiLoadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);
+
+// From Stop Generation
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiStopResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+
+// From Unload Model
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiUnloadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);

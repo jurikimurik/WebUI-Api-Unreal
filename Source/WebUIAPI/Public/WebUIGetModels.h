@@ -6,7 +6,7 @@
 
 #include "WebUIGetModels.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiGetModelsResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FString>&, message);
+
 
 UCLASS()
 class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase

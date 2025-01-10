@@ -8,7 +8,7 @@
 #include "HttpModule.h"
 #include "WebUICallCompletions.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+
 
 /**
  * 
