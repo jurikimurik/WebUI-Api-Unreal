@@ -111,9 +111,9 @@ void UWebUIStopGeneration::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr 
 		
 		WebUIParser parser(ChatSettings);
 		//Special method in Parses was created
-		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
+		FString _out = (Response->GetContentAsString());
 
-		if (_out.Text.IsEmpty())
+		if (_out.IsEmpty())
 		{
 			Finished.Broadcast(false, TEXT("Response text is empty."), _out);
 		} else

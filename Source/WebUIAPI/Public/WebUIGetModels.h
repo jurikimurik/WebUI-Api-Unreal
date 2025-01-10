@@ -20,7 +20,7 @@ class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
-	FOnWebUiGetModelsResponseRecievedPin Finished;
+	FOnWebUiArraySimpleResponsePin Finished;
 	
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")

@@ -950,20 +950,21 @@ struct FTransformerSettings
 
 // DELEGATES -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// From Call Completions 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+// To retrieve FString
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiSimpleResponsePin, bool, Success, const FString&, errorMessage, const FString, message);
 
-// From Chat Completions
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FChatCompletionWebUI>&, messages);
+// To retrieve TArray<FString> 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiArraySimpleResponsePin, bool, Success, const FString&, errorMessage, const TArray<FString>&, message);
 
-// From Get Models
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiGetModelsResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FString>&, message);
+// To retrieve FChatCompletionWebUI
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiChatCompletionResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FChatCompletionWebUI>&, messages);
 
-// From Load Model
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiLoadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);
+// To retrieve FCompletion
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiCompletionResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
 
-// From Stop Generation
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiStopResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
 
-// From Unload Model
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiUnloadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);
+
+
+
+
+

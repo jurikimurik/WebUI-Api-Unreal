@@ -25,7 +25,7 @@ public:
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
-	FOnWebUiLoadModelResponseRecievedPin Finished;
+	FOnWebUiSimpleResponsePin Finished;
 
 private:
 	
