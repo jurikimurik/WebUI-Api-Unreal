@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WebUIChatCompletions.h"
+#include "Functions/WebUIChatCompletions.h"
 #include "WebUIDefinitions.h"
 #include "Http.h"
 #include "Dom/JsonObject.h"
@@ -114,9 +114,9 @@ void UWebUIChatCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		}
 
 		
-		WebUIParser parser(ChatSettings);
+		WebUIParser parser(*responseObject);
 			//Special method in Parses was created
-		TArray<FChatCompletionWebUI> _out = parser.ParseChatWebUIResponse(*responseObject);
+		TArray<FChatCompletionWebUI> _out = parser.ParseWebUIChatCompletionResponse();
 
 		if (_out.IsEmpty())
 		{

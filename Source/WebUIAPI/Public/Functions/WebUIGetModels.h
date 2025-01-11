@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "WebUIDefinitions.h"
+#include "./WebUIDefinitions.h"
 #include "HttpModule.h"
 
 #include "WebUIGetModels.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiGetModelsResponseRecievedPin, bool, Success, const FString&, errorMessage, const TArray<FString>&, message);
+
 
 UCLASS()
 class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase
@@ -20,7 +20,7 @@ class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
-	FOnWebUiGetModelsResponseRecievedPin Finished;
+	FOnWebUiArraySimpleResponsePin Finished;
 	
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")

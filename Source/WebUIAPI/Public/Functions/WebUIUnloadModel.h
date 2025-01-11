@@ -2,35 +2,32 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "WebUIDefinitions.h"
+#include "./WebUIDefinitions.h"
 #include "HttpModule.h"
 
-#include "WebUILoadModel.generated.h"
+#include "WebUIUnloadModel.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiLoadModelResponseRecievedPin, bool, Success, const FString&, errorMessage, const FString, message);
+
 
 UCLASS()
-class WEBUIAPI_API UWebUILoadModel : public UBlueprintAsyncActionBase
+class WEBUIAPI_API UIWebUIUnloadModel : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
 public:
-	UWebUILoadModel();
-	virtual ~UWebUILoadModel() override;
-
-	// Special setting that is being used for simple generation
-	FTransformerSettings ModelSettings;
-
+	UIWebUIUnloadModel();
+	virtual ~UIWebUIUnloadModel() override;
+	
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
-	FOnWebUiLoadModelResponseRecievedPin Finished;
+	FOnWebUiSimpleResponsePin Finished;
 
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
-	static UWebUILoadModel* LoadWebUIModel(FTransformerSettings modelSettings, FString Address);
+	static UIWebUIUnloadModel* UnloadWebUIModel(FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload() const;
 	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);

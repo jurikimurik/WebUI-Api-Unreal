@@ -1,7 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "Functions/WebUIUnloadModel.h"
 
-
-#include "WebUICallCompletions.h"
 #include "WebUIParser.h"
 #include "Http.h"
 #include "WebUIUtils.h"
@@ -9,33 +7,30 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
-UWebUICallCompletions::UWebUICallCompletions()
+UIWebUIUnloadModel::UIWebUIUnloadModel()
 {
 }
 
-UWebUICallCompletions::~UWebUICallCompletions()
+UIWebUIUnloadModel::~UIWebUIUnloadModel()
 {
 }
 
-UWebUICallCompletions* UWebUICallCompletions::OpenWebUICallCompletions(FCompletionGenerationSettings ChatSettingsInput, FString Address)
+UIWebUIUnloadModel* UIWebUIUnloadModel::UnloadWebUIModel(FString Address)
 {
-	UWebUICallCompletions* BPNode = NewObject<UWebUICallCompletions>();
-	BPNode->ChatSettings = ChatSettingsInput;
+	UIWebUIUnloadModel* BPNode = NewObject<UIWebUIUnloadModel>();
 	BPNode->Address = Address;
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UWebUICallCompletions::BuildPayload() const
+TSharedPtr<FJsonObject> UIWebUIUnloadModel::BuildPayload() const
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
-	UWebUIUtils::IncludeCompletionGenerationSettings(_payloadObject, ChatSettings);
-
 	return _payloadObject;
 }
 
-void UWebUICallCompletions::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
+void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
 	
@@ -46,7 +41,7 @@ void UWebUICallCompletions::CommitRequest(const FString& Verb, const TSharedRef<
 
 	if (HttpRequest->ProcessRequest())
 	{
-		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUICallCompletions::OnResponse);
+		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UIWebUIUnloadModel::OnResponse);
 	}
 	else
 	{
@@ -54,7 +49,7 @@ void UWebUICallCompletions::CommitRequest(const FString& Verb, const TSharedRef<
 	}
 }
 
-bool UWebUICallCompletions::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
+bool UIWebUIUnloadModel::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -74,7 +69,7 @@ bool UWebUICallCompletions::CheckResponse(const FHttpResponsePtr& Response, cons
 	return true;
 }
 
-void UWebUICallCompletions::Activate()
+void UIWebUIUnloadModel::Activate()
 {
 	// NOTE: ApiKey was deleted because it was not really necessary to have it to connect to Oobabooga's WebUI. 
 
@@ -82,7 +77,7 @@ void UWebUICallCompletions::Activate()
 	auto HttpRequest = FHttpModule::Get().CreateRequest();
 	
 	// set headers
-	FString url = FString::Printf(TEXT("%s/v1/completions"), *Address);
+	FString url = FString::Printf(TEXT("%s/v1/internal/model/unload"), *Address);
 	HttpRequest->SetURL(url);
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 
@@ -97,7 +92,7 @@ void UWebUICallCompletions::Activate()
 	CommitRequest("POST", HttpRequest,_payload);
 }
 
-void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
+void UIWebUIUnloadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 
@@ -105,30 +100,15 @@ void UWebUICallCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 	
-	if (FJsonSerializer::Deserialize(reader, responseObject))
+	//Special method in Parses was created
+	FString _out = (Response->GetContentAsString());
+
+	if (_out.IsEmpty())
 	{
-		if (responseObject->HasField(TEXT("error")))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
-			Finished.Broadcast(false, TEXT("Api error"), {});
-			return;
-		}
-
-		
-		WebUIParser parser(ChatSettings);
-		//Special method in Parses was created
-		FCompletion _out = parser.ParseWebIUResponse(*responseObject);
-
-		if (_out.Text.IsEmpty())
-		{
-			Finished.Broadcast(false, TEXT("Response text is empty."), _out);
-		} else
-		{
-			Finished.Broadcast(true, "", _out);	
-		}
+		Finished.Broadcast(false, TEXT("Response text is empty."), _out);
 	} else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
+		Finished.Broadcast(true, "", _out);	
 	}
 }
 

@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "WebUIDefinitions.h"
+#include "./WebUIDefinitions.h"
 #include "HttpModule.h"
 
 #include "WebUIStopGeneration.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnWebUiStopResponseRecievedPin, bool, Success, const FString&, errorMessage, const FCompletion, message);
+
 
 // Function sends HTTP packet to WebUI on address to stop generation.
 UCLASS()
@@ -25,7 +25,7 @@ public:
 	FString Address = "https://127.0.0.1:5000";
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
-	FOnWebUiStopResponseRecievedPin Finished;
+	FOnWebUiSimpleResponsePin Finished;
 
 private:
 	

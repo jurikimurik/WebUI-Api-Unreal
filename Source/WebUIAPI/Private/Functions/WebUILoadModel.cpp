@@ -1,34 +1,39 @@
-﻿#include "WebUIGetModels.h"
+﻿#include "Functions/WebUILoadModel.h"
+
 #include "WebUIParser.h"
 #include "Http.h"
+#include "WebUIUtils.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
-UWebUIGetModels::UWebUIGetModels()
+UWebUILoadModel::UWebUILoadModel()
 {
 }
 
-UWebUIGetModels::~UWebUIGetModels()
+UWebUILoadModel::~UWebUILoadModel()
 {
 }
 
-UWebUIGetModels* UWebUIGetModels::GetWebUIModels(FString Address)
+UWebUILoadModel* UWebUILoadModel::LoadWebUIModel(FTransformerSettings modelSettings, FString Address)
 {
-	UWebUIGetModels* BPNode = NewObject<UWebUIGetModels>();
+	UWebUILoadModel* BPNode = NewObject<UWebUILoadModel>();
+	BPNode->ModelSettings = modelSettings;
 	BPNode->Address = Address;
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UWebUIGetModels::BuildPayload() const
+TSharedPtr<FJsonObject> UWebUILoadModel::BuildPayload() const
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
+	UWebUIUtils::IncludeTransformerModelSettings(_payloadObject, ModelSettings);
+
 	return _payloadObject;
 }
 
-void UWebUIGetModels::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
+void UWebUILoadModel::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
 	
@@ -39,7 +44,7 @@ void UWebUIGetModels::CommitRequest(const FString& Verb, const TSharedRef<IHttpR
 
 	if (HttpRequest->ProcessRequest())
 	{
-		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUIGetModels::OnResponse);
+		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUILoadModel::OnResponse);
 	}
 	else
 	{
@@ -47,7 +52,7 @@ void UWebUIGetModels::CommitRequest(const FString& Verb, const TSharedRef<IHttpR
 	}
 }
 
-bool UWebUIGetModels::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
+bool UWebUILoadModel::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -67,7 +72,7 @@ bool UWebUIGetModels::CheckResponse(const FHttpResponsePtr& Response, const bool
 	return true;
 }
 
-void UWebUIGetModels::Activate()
+void UWebUILoadModel::Activate()
 {
 	// NOTE: ApiKey was deleted because it was not really necessary to have it to connect to Oobabooga's WebUI. 
 
@@ -75,7 +80,7 @@ void UWebUIGetModels::Activate()
 	auto HttpRequest = FHttpModule::Get().CreateRequest();
 	
 	// set headers
-	FString url = FString::Printf(TEXT("%s/v1/internal/model/list"), *Address);
+	FString url = FString::Printf(TEXT("%s/v1/internal/model/load"), *Address);
 	HttpRequest->SetURL(url);
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 
@@ -87,10 +92,10 @@ void UWebUIGetModels::Activate()
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&_payload);
 	FJsonSerializer::Serialize(_payloadObject.ToSharedRef(), Writer);
 
-	CommitRequest("GET", HttpRequest,TEXT(""));
+	CommitRequest("POST", HttpRequest,_payload);
 }
 
-void UWebUIGetModels::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
+void UWebUILoadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 
@@ -98,29 +103,15 @@ void UWebUIGetModels::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Respo
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 	
-	if (FJsonSerializer::Deserialize(reader, responseObject))
+	//Special method in Parses was created
+	FString _out = (Response->GetContentAsString());
+
+	if (_out.IsEmpty())
 	{
-		if (responseObject->HasField(TEXT("error")))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
-			Finished.Broadcast(false, TEXT("Api error"), {});
-			return;
-		}
-
-		
-		//Special method in Parses was created
-		TArray<FString> _out = WebUIParser::ParseModelList(*responseObject);
-
-		if (_out.IsEmpty())
-		{
-			Finished.Broadcast(false, TEXT("Response texts are empty."), _out);
-		} else
-		{
-			Finished.Broadcast(true, "", _out);	
-		}
+		Finished.Broadcast(false, TEXT("Response text is empty."), _out);
 	} else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
+		Finished.Broadcast(true, "", _out);	
 	}
 }
 

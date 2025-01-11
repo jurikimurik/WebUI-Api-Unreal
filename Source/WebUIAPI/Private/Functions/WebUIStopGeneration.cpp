@@ -1,5 +1,4 @@
-﻿#include "WebUIUnloadModel.h"
-
+﻿#include "Functions/WebUIStopGeneration.h"
 #include "WebUIParser.h"
 #include "Http.h"
 #include "WebUIUtils.h"
@@ -7,22 +6,22 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
-UIWebUIUnloadModel::UIWebUIUnloadModel()
+UWebUIStopGeneration::UWebUIStopGeneration()
 {
 }
 
-UIWebUIUnloadModel::~UIWebUIUnloadModel()
+UWebUIStopGeneration::~UWebUIStopGeneration()
 {
 }
 
-UIWebUIUnloadModel* UIWebUIUnloadModel::UnloadWebUIModel(FString Address)
+UWebUIStopGeneration* UWebUIStopGeneration::StopWebUIGeneration(FString Address)
 {
-	UIWebUIUnloadModel* BPNode = NewObject<UIWebUIUnloadModel>();
+	UWebUIStopGeneration* BPNode = NewObject<UWebUIStopGeneration>();
 	BPNode->Address = Address;
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UIWebUIUnloadModel::BuildPayload() const
+TSharedPtr<FJsonObject> UWebUIStopGeneration::BuildPayload() const
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
@@ -30,7 +29,7 @@ TSharedPtr<FJsonObject> UIWebUIUnloadModel::BuildPayload() const
 	return _payloadObject;
 }
 
-void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
+void UWebUIStopGeneration::CommitRequest(const FString& Verb, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& HttpRequest, const FString& _payload)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Payload to send: %s"), *_payload);
 	
@@ -41,7 +40,7 @@ void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHt
 
 	if (HttpRequest->ProcessRequest())
 	{
-		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UIWebUIUnloadModel::OnResponse);
+		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUIStopGeneration::OnResponse);
 	}
 	else
 	{
@@ -49,7 +48,7 @@ void UIWebUIUnloadModel::CommitRequest(const FString& Verb, const TSharedRef<IHt
 	}
 }
 
-bool UIWebUIUnloadModel::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
+bool UWebUIStopGeneration::CheckResponse(const FHttpResponsePtr& Response, const bool& WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -69,7 +68,7 @@ bool UIWebUIUnloadModel::CheckResponse(const FHttpResponsePtr& Response, const b
 	return true;
 }
 
-void UIWebUIUnloadModel::Activate()
+void UWebUIStopGeneration::Activate()
 {
 	// NOTE: ApiKey was deleted because it was not really necessary to have it to connect to Oobabooga's WebUI. 
 
@@ -77,7 +76,7 @@ void UIWebUIUnloadModel::Activate()
 	auto HttpRequest = FHttpModule::Get().CreateRequest();
 	
 	// set headers
-	FString url = FString::Printf(TEXT("%s/v1/internal/model/unload"), *Address);
+	FString url = FString::Printf(TEXT("%s/v1/internal/stop-generation"), *Address);
 	HttpRequest->SetURL(url);
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 
@@ -92,7 +91,7 @@ void UIWebUIUnloadModel::Activate()
 	CommitRequest("POST", HttpRequest,_payload);
 }
 
-void UIWebUIUnloadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
+void UWebUIStopGeneration::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 
@@ -100,15 +99,28 @@ void UIWebUIUnloadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Re
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 	
-	//Special method in Parses was created
-	FString _out = (Response->GetContentAsString());
-
-	if (_out.IsEmpty())
+	if (FJsonSerializer::Deserialize(reader, responseObject))
 	{
-		Finished.Broadcast(false, TEXT("Response text is empty."), _out);
+		if (responseObject->HasField(TEXT("error")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
+			Finished.Broadcast(false, TEXT("Api error"), {});
+			return;
+		}
+		
+		//Special method in Parses was created
+		FString _out = (Response->GetContentAsString());
+
+		if (_out.IsEmpty())
+		{
+			Finished.Broadcast(false, TEXT("Response text is empty."), _out);
+		} else
+		{
+			Finished.Broadcast(true, "", _out);	
+		}
 	} else
 	{
-		Finished.Broadcast(true, "", _out);	
+		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
 	}
 }
 
