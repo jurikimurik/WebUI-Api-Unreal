@@ -30,6 +30,9 @@ struct FBasicModelSettings
 	TArray<FCustomJSONParameter> CustomJSONParameters;
 };
 
+/**
+ * Setting for transformer type of AI models. (Retrieved from: https://github.com/oobabooga/text-generation-webui/wiki/04-%E2%80%90-Model-Tab)
+ */
 USTRUCT(BlueprintType)
 struct FTransformerSettings
 {
