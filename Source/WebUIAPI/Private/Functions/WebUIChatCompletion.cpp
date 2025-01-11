@@ -22,7 +22,7 @@ UWebUIChatCompletion::~UWebUIChatCompletion()
 UWebUIChatCompletion* UWebUIChatCompletion::WebUI_ChatCompletion(FChatCompletionGenerationSettings ChatSettingsInput, FString Address)
 {
 	UWebUIChatCompletion* BPNode = NewObject<UWebUIChatCompletion>();
-	BPNode->ChatSettings = ChatSettingsInput;
+	BPNode->ChatCompletionSettings = ChatSettingsInput;
 	BPNode->Address = Address;
 	return BPNode;
 }
@@ -33,7 +33,7 @@ TSharedPtr<FJsonObject> UWebUIChatCompletion::BuildPayload()
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
 	//Creating and loading messages array
-	UWebUIUtils::IncludeChatGenerationSettings(_payloadObject, ChatSettings);
+	UWebUIUtils::IncludeChatGenerationSettings(_payloadObject, ChatCompletionSettings);
 
 	return _payloadObject;
 }

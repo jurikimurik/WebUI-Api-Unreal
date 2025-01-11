@@ -23,7 +23,7 @@ public:
 	virtual ~UWebUIChatCompletion() override;
 
 	// Special setting that is being used for simple generation
-	FChatCompletionGenerationSettings ChatSettings;
+	FChatCompletionGenerationSettings ChatCompletionSettings;
 
 	//IP address with port number, where HTTP Request will be sent
 	FString Address = "https://127.0.0.1:5000";

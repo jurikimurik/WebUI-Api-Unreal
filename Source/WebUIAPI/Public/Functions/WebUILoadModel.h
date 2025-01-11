@@ -22,10 +22,10 @@ public:
 	virtual ~UWebUILoadModel() override;
 
 	// Special setting that is being used for simple generation
-	FTransformerSettings ModelSettings;
+	FTransformerSettings TransformerModelSettings;
 
 	//IP address with port number, where HTTP Request will be sent
-	FString Address = "https://127.0.0.1:5000";
+	FString Address = TEXT("https://127.0.0.1:5000");
 
 	UPROPERTY(BlueprintAssignable, Category="WebUI")
 	FOnWebUiSimpleResponsePin Finished;

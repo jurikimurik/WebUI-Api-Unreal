@@ -17,10 +17,10 @@ UWebUICompletion::~UWebUICompletion()
 {
 }
 
-UWebUICompletion* UWebUICompletion::WebUI_Completion(FCompletionGenerationSettings ChatSettingsInput, FString Address)
+UWebUICompletion* UWebUICompletion::WebUI_Completion(FCompletionGenerationSettings completionSettings, FString Address)
 {
 	UWebUICompletion* BPNode = NewObject<UWebUICompletion>();
-	BPNode->ChatSettings = ChatSettingsInput;
+	BPNode->CompletionSettings = completionSettings;
 	BPNode->Address = Address;
 	return BPNode;
 }
@@ -30,7 +30,7 @@ TSharedPtr<FJsonObject> UWebUICompletion::BuildPayload() const
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
-	UWebUIUtils::IncludeCompletionGenerationSettings(_payloadObject, ChatSettings);
+	UWebUIUtils::IncludeCompletionGenerationSettings(_payloadObject, CompletionSettings);
 
 	return _payloadObject;
 }

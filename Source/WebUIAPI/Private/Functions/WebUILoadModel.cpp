@@ -18,7 +18,7 @@ UWebUILoadModel::~UWebUILoadModel()
 UWebUILoadModel* UWebUILoadModel::WebUI_LoadModel(FTransformerSettings modelSettings, FString Address)
 {
 	UWebUILoadModel* BPNode = NewObject<UWebUILoadModel>();
-	BPNode->ModelSettings = modelSettings;
+	BPNode->TransformerModelSettings = modelSettings;
 	BPNode->Address = Address;
 	return BPNode;
 }
@@ -28,7 +28,7 @@ TSharedPtr<FJsonObject> UWebUILoadModel::BuildPayload() const
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 
-	UWebUIUtils::IncludeTransformerModelSettings(_payloadObject, ModelSettings);
+	UWebUIUtils::IncludeTransformerModelSettings(_payloadObject, TransformerModelSettings);
 
 	return _payloadObject;
 }
