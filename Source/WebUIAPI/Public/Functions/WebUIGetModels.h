@@ -8,6 +8,9 @@
 
 
 
+/**
+ * Make an HTTP request to WebUI for retrieving all models that can be loaded.
+ */
 UCLASS()
 class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase
 {

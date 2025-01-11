@@ -11,7 +11,7 @@
 
 
 /**
- * 
+ * Make an HTTP request to WebUI for a chat completion.
  */
 UCLASS()
 class WEBUIAPI_API UWebUIChatCompletion : public UBlueprintAsyncActionBase

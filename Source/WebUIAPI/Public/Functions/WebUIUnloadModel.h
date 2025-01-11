@@ -9,6 +9,9 @@
 
 
 
+/**
+ * Make an HTTP request to WebUI for unloading AI model.
+ */
 UCLASS()
 class WEBUIAPI_API UIWebUIUnloadModel : public UBlueprintAsyncActionBase
 {

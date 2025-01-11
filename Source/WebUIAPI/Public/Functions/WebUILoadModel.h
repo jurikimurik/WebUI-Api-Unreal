@@ -9,6 +9,9 @@
 
 
 
+/**
+ * Make an HTTP request to WebUI to load desired model.  
+ */
 UCLASS()
 class WEBUIAPI_API UWebUILoadModel : public UBlueprintAsyncActionBase
 {

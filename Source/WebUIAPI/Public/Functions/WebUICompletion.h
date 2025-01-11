@@ -11,7 +11,7 @@
 
 
 /**
- * 
+ * Make an HTTP request to WebUI for basic completion.
  */
 UCLASS()
 class WEBUIAPI_API UWebUICompletion : public UBlueprintAsyncActionBase

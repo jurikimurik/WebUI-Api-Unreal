@@ -8,7 +8,10 @@
 
 
 
-// Function sends HTTP packet to WebUI on address to stop generation.
+
+/**
+ * Make an HTTP request to WebUI to prevent further generation.
+ */
 UCLASS()
 class WEBUIAPI_API UWebUIStopGeneration : public UBlueprintAsyncActionBase
 {
