@@ -14,7 +14,7 @@ UWebUIStopGeneration::~UWebUIStopGeneration()
 {
 }
 
-UWebUIStopGeneration* UWebUIStopGeneration::StopWebUIGeneration(FString Address)
+UWebUIStopGeneration* UWebUIStopGeneration::WebUI_StopGeneration(FString Address)
 {
 	UWebUIStopGeneration* BPNode = NewObject<UWebUIStopGeneration>();
 	BPNode->Address = Address;

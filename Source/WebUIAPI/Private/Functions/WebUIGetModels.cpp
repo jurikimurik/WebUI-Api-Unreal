@@ -13,7 +13,7 @@ UWebUIGetModels::~UWebUIGetModels()
 {
 }
 
-UWebUIGetModels* UWebUIGetModels::GetWebUIModels(FString Address)
+UWebUIGetModels* UWebUIGetModels::WebUI_GetModels(FString Address)
 {
 	UWebUIGetModels* BPNode = NewObject<UWebUIGetModels>();
 	BPNode->Address = Address;

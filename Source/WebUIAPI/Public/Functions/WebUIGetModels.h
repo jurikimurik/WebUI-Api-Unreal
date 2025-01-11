@@ -24,7 +24,7 @@ class WEBUIAPI_API UWebUIGetModels : public UBlueprintAsyncActionBase
 	
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
-	static UWebUIGetModels* GetWebUIModels(FString Address);
+	static UWebUIGetModels* WebUI_GetModels(FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload() const;
 	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);

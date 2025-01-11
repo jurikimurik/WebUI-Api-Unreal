@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Functions/WebUIChatCompletions.h"
+#include "Functions/WebUIChatCompletion.h"
 #include "WebUIDefinitions.h"
 #include "Http.h"
 #include "Dom/JsonObject.h"
@@ -11,23 +11,23 @@
 #include "WebUIUtils.h"
 
 
-UWebUIChatCompletions::UWebUIChatCompletions()
+UWebUIChatCompletion::UWebUIChatCompletion()
 {
 }
 
-UWebUIChatCompletions::~UWebUIChatCompletions()
+UWebUIChatCompletion::~UWebUIChatCompletion()
 {
 }
 
-UWebUIChatCompletions* UWebUIChatCompletions::OpenWebUIChatCompletions(FChatCompletionGenerationSettings ChatSettingsInput, FString Address)
+UWebUIChatCompletion* UWebUIChatCompletion::WebUI_ChatCompletion(FChatCompletionGenerationSettings ChatSettingsInput, FString Address)
 {
-	UWebUIChatCompletions* BPNode = NewObject<UWebUIChatCompletions>();
+	UWebUIChatCompletion* BPNode = NewObject<UWebUIChatCompletion>();
 	BPNode->ChatSettings = ChatSettingsInput;
 	BPNode->Address = Address;
 	return BPNode;
 }
 
-TSharedPtr<FJsonObject> UWebUIChatCompletions::BuildPayload()
+TSharedPtr<FJsonObject> UWebUIChatCompletion::BuildPayload()
 {
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
@@ -38,7 +38,7 @@ TSharedPtr<FJsonObject> UWebUIChatCompletions::BuildPayload()
 	return _payloadObject;
 }
 
-void UWebUIChatCompletions::CommitRequest(FString Verb, TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest, FString _payload)
+void UWebUIChatCompletion::CommitRequest(FString Verb, TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest, FString _payload)
 {
 	// commit request
 	HttpRequest->SetVerb(Verb);
@@ -46,7 +46,7 @@ void UWebUIChatCompletions::CommitRequest(FString Verb, TSharedRef<IHttpRequest,
 
 	if (HttpRequest->ProcessRequest())
 	{
-		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUIChatCompletions::OnResponse);
+		HttpRequest->OnProcessRequestComplete().BindUObject(this, &UWebUIChatCompletion::OnResponse);
 	}
 	else
 	{
@@ -54,7 +54,7 @@ void UWebUIChatCompletions::CommitRequest(FString Verb, TSharedRef<IHttpRequest,
 	}
 }
 
-void UWebUIChatCompletions::Activate()
+void UWebUIChatCompletion::Activate()
 {
 	// NOTE: ApiKey was deleted because it was not really necessary to have it to connect to Oobabooga's WebUI.
 	
@@ -76,7 +76,7 @@ void UWebUIChatCompletions::Activate()
 	CommitRequest("POST", HttpRequest,_payload);
 }
 
-bool UWebUIChatCompletions::CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const
+bool UWebUIChatCompletion::CheckResponse(FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!WasSuccessful)
 	{
@@ -96,7 +96,7 @@ bool UWebUIChatCompletions::CheckResponse(FHttpResponsePtr Response, bool WasSuc
 	return true;
 }
 
-void UWebUIChatCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
+void UWebUIChatCompletion::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful) const
 {
 	if (!CheckResponse(Response, WasSuccessful)) return;
 

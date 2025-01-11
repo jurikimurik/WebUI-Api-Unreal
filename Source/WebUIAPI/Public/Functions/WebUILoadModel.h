@@ -30,7 +30,7 @@ public:
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
-	static UWebUILoadModel* LoadWebUIModel(FTransformerSettings modelSettings, FString Address);
+	static UWebUILoadModel* WebUI_LoadModel(FTransformerSettings modelSettings, FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload() const;
 	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);

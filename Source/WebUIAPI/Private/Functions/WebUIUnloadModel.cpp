@@ -15,7 +15,7 @@ UIWebUIUnloadModel::~UIWebUIUnloadModel()
 {
 }
 
-UIWebUIUnloadModel* UIWebUIUnloadModel::UnloadWebUIModel(FString Address)
+UIWebUIUnloadModel* UIWebUIUnloadModel::WebUI_UnloadModel(FString Address)
 {
 	UIWebUIUnloadModel* BPNode = NewObject<UIWebUIUnloadModel>();
 	BPNode->Address = Address;

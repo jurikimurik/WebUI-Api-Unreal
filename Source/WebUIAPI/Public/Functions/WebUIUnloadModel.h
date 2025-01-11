@@ -27,7 +27,7 @@ public:
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
-	static UIWebUIUnloadModel* UnloadWebUIModel(FString Address);
+	static UIWebUIUnloadModel* WebUI_UnloadModel(FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload() const;
 	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);

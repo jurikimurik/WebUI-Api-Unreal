@@ -6,7 +6,7 @@
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "./WebUIDefinitions.h"
 #include "HttpModule.h"
-#include "WebUICallCompletions.generated.h"
+#include "WebUICompletion.generated.h"
 
 
 
@@ -14,13 +14,13 @@
  * 
  */
 UCLASS()
-class WEBUIAPI_API UWebUICallCompletions : public UBlueprintAsyncActionBase
+class WEBUIAPI_API UWebUICompletion : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
 public:
-	UWebUICallCompletions();
-	virtual ~UWebUICallCompletions() override;
+	UWebUICompletion();
+	virtual ~UWebUICompletion() override;
 
 	// Special setting that is being used for simple generation
 	FCompletionGenerationSettings ChatSettings;
@@ -34,7 +34,7 @@ public:
 private:
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "WebUI")
-	static UWebUICallCompletions* OpenWebUICallCompletions(FCompletionGenerationSettings chatSettings, FString Address);
+	static UWebUICompletion* WebUI_Completion(FCompletionGenerationSettings chatSettings, FString Address);
 	
 	TSharedPtr<FJsonObject> BuildPayload() const;
 	void CommitRequest(const ::FString&, const TSharedRef<IHttpRequest, ESPMode::ThreadSafe>&, const FString& _payload);

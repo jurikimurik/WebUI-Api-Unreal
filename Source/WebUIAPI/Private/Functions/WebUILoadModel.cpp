@@ -15,7 +15,7 @@ UWebUILoadModel::~UWebUILoadModel()
 {
 }
 
-UWebUILoadModel* UWebUILoadModel::LoadWebUIModel(FTransformerSettings modelSettings, FString Address)
+UWebUILoadModel* UWebUILoadModel::WebUI_LoadModel(FTransformerSettings modelSettings, FString Address)
 {
 	UWebUILoadModel* BPNode = NewObject<UWebUILoadModel>();
 	BPNode->ModelSettings = modelSettings;
