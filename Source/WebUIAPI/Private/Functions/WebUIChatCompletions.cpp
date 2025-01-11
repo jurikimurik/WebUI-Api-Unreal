@@ -125,6 +125,10 @@ void UWebUIChatCompletions::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr
 		{
 			Finished.Broadcast(true, "", _out);	
 		}
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
+		Finished.Broadcast(false, TEXT("Cannot deserialize object"), {});
 	}
 }
 

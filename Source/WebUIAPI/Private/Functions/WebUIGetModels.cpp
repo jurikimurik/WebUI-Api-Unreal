@@ -122,6 +122,7 @@ void UWebUIGetModels::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Respo
 	} else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
+		Finished.Broadcast(false, TEXT("Cannot deserialize object"), {});
 	}
 }
 
