@@ -2,7 +2,14 @@
 
 namespace JSONUtils
 {
-	//Template method for checking and setting JSON parameter. Using "SetNumberField" by default.
+	// If new type that inherits from FBasicJSONSetting was created - create also specialized template for it!
+	
+	/**
+	 * Template method for checking and setting JSON parameter. Using "SetNumberField" by default.
+	 * @tparam T Type that inherits from FBasicJSONSetting.
+	 * @param Shared JSONObject were Value should be inserted.
+	 * @param Value This will be written in Shared if it is enabled.
+	 */
 	template <class T> void CheckAndSet(TSharedPtr<FJsonObject> Shared, const T& Value)
 	{
 		if (Value)
