@@ -100,7 +100,6 @@ void UIWebUIUnloadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Re
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 	
-	//Special method in Parses was created
 	FString _out = (Response->GetContentAsString());
 
 	if (_out.IsEmpty())

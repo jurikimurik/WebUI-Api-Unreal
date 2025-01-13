@@ -99,29 +99,13 @@ void UWebUIStopGeneration::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr 
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 	
-	if (FJsonSerializer::Deserialize(reader, responseObject))
+	FString _out = (Response->GetContentAsString());
+	if (_out.IsEmpty())
 	{
-		if (responseObject->HasField(TEXT("error")))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
-			Finished.Broadcast(false, TEXT("Api error"), {});
-			return;
-		}
-		
-		//Special method in Parses was created
-		FString _out = (Response->GetContentAsString());
-
-		if (_out.IsEmpty())
-		{
-			Finished.Broadcast(false, TEXT("Response text is empty."), _out);
-		} else
-		{
-			Finished.Broadcast(true, "", _out);	
-		}
+		Finished.Broadcast(false, TEXT("Response text is empty."), _out);
 	} else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot deserialize object"));
-		Finished.Broadcast(false, TEXT("Cannot deserialize object"), {});
+		Finished.Broadcast(true, "", _out);	
 	}
 }
 

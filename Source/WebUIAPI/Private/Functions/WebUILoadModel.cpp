@@ -103,9 +103,7 @@ void UWebUILoadModel::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Respo
 	TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString());
 	
-	//Special method in Parses was created
 	FString _out = (Response->GetContentAsString());
-
 	if (_out.IsEmpty())
 	{
 		Finished.Broadcast(false, TEXT("Response text is empty."), _out);
